@@ -3,12 +3,9 @@
 // Licensed under the MIT.
 // https://github.com/RAT-ISET/parabolic-antenna-calculater
 // ==============================================================
-// Path /src/Main.cpp
-// Main of ParabolicAntennaCalculater.
+// Path /include/pac/arg/Cmd.hpp
+// Header file of the command line handler.
 
-#include <pac/arg/Cmd.hpp>
+#pragma once
 
-int main(const int argc, char* argv[])
-{
-    return command(argc, argv);
-}
+int command(int argc, char* argv[]);
