@@ -26,6 +26,7 @@ DataFile::DataFile(fstream file)
         {
             this->parameters_[i] = nullopt;
         }
+        flag = flag >> 1;
     }
 }
 
@@ -51,4 +52,24 @@ optional<double> DataFile::getParameter(const size_t index) const
 ParameterList& DataFile::getParameterList()
 {
     return parameters_;
+}
+
+void DataFile::save()
+{
+    file_.seekp(1);
+    uint8_t flag = 0;
+    for (int i = 0; i < 7; i++)
+    {
+        if (parameters_[i].has_value())
+        {
+            file_.write(reinterpret_cast<char*>(&parameters_[i].value()), sizeof(double));
+        } else
+        {
+            file_.write(nullptr, sizeof(double));
+            flag = flag | 0x01;
+        }
+        flag = flag << 1;
+    }
+    file_.seekp(0);
+    file_.write(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
 }
