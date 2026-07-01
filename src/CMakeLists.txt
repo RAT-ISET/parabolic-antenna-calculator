@@ -4,3 +4,4 @@ target_include_directories(ParabolicAntennaCalculater PRIVATE ${CMAKE_SOURCE_DIR
 target_link_libraries(ParabolicAntennaCalculater PRIVATE ParabolicAntennaCalculaterDeps ParabolicAntennaCalculaterCore)
 
 add_subdirectory(core)
+add_subdirectory(io)
