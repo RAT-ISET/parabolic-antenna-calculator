@@ -3,7 +3,7 @@
 // Licensed under the MIT.
 // https://github.com/RAT-ISET/parabolic-antenna-calculater
 // ==============================================================
-// Path /include/pac/core/Logger.cpp
+// Path /include/pac/core/Logger.hpp
 // Header file of the calculater log recorder.
 
 #pragma once

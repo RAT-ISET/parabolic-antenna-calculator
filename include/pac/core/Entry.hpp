@@ -3,7 +3,7 @@
 // Licensed under the MIT.
 // https://github.com/RAT-ISET/parabolic-antenna-calculater
 // ==============================================================
-// Path /include/pac/core/Entry.cpp
+// Path /include/pac/core/Entry.hpp
 // Header file of the entry for antenna.
 
 #pragma once
