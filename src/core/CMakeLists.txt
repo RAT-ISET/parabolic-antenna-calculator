@@ -1,0 +1,3 @@
+add_library(ParabolicAntennaCalculaterCore Entry.cpp Error.cpp Logger.cpp)
+target_include_directories(ParabolicAntennaCalculaterCore PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(ParabolicAntennaCalculaterCore PRIVATE ParabolicAntennaCalculaterDeps)
