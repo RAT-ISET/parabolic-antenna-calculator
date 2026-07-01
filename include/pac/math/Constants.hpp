@@ -8,4 +8,7 @@
 
 #pragma once
 
-constexpr double C = 299792458.0;
+namespace Constants
+{
+    constexpr double C = 299792458.0;
+}
