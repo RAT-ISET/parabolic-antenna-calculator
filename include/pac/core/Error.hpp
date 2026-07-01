@@ -15,7 +15,8 @@ enum class AntennaEntryErrorEnum
 {
     MissingParameter,
     InvalidParameter,
-    ParameterConflict,
+    ConflictParameter,
+    UnknownParameter,
 };
 
 struct AntennaEntryError
