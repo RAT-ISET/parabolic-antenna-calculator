@@ -8,3 +8,20 @@
 
 #pragma once
 
+#include <fstream>
+#include <array>
+#include <optional>
+#include <pac/core/Definition.hpp>
+
+using namespace std;
+
+class DataFile
+{
+    fstream file_;
+    ParameterList parameters_;
+public:
+    optional<double> setParameter(size_t index, double value);
+    optional<double> deleteParameter(size_t index);
+    optional<double> getParameter(size_t index) const;
+    ParameterList& getParameterList();
+};
