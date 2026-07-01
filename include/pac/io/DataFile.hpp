@@ -20,6 +20,7 @@ class DataFile
     fstream file_;
     ParameterList parameters_;
 public:
+    explicit DataFile(fstream file);
     optional<double> setParameter(size_t index, double value);
     optional<double> deleteParameter(size_t index);
     optional<double> getParameter(size_t index) const;
