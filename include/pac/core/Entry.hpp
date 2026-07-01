@@ -13,25 +13,15 @@
 #include <expected>
 #include <pac/core/Logger.hpp>
 #include <pac/core/Error.hpp>
+#include <pac/core/Definition.hpp>
 
 using namespace std;
-
-constexpr array parameter_map{
-    "frequency",
-    "wavelength",
-    "efficiency",
-    "diameter",
-    "increase",
-    "focalLength",
-    "height",
-    "f/D",
-};
 
 optional<size_t> matchParameter(const string& name);
 
 struct AntennaEntry
 {
-    array<optional<double>, 8> parameter_;
+    ParameterList parameter_;
     AntennaEntry() = default;
     void addParameter(size_t index, double value);
     optional<size_t> addParameterByName(const string& name, double value);

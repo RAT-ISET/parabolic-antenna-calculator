@@ -10,12 +10,12 @@
 
 optional<size_t> matchParameter(const string& name)
 {
-    if (const auto parameter = ranges::find(parameter_map, name); parameter == parameter_map.end())
+    if (const auto parameter = ranges::find(PARAMETER_MAP, name); parameter == PARAMETER_MAP.end())
     {
         return nullopt;
     } else
     {
-        auto index = distance(parameter_map.begin(), parameter);
+        auto index = distance(PARAMETER_MAP.begin(), parameter);
         return index;
     }
 }
