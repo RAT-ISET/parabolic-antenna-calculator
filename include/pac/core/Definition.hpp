@@ -10,6 +10,7 @@
 
 #include <array>
 #include <optional>
+#include <thread>
 #include <pac/core/Logger.hpp>
 
 using namespace std;
@@ -17,6 +18,8 @@ using namespace std;
 using ParameterList = array<optional<double>, 8>;
 
 inline Logger* logger;
+
+static size_t THREAD_ID = hash<thread::id>{}(this_thread::get_id());
 
 constexpr array PARAMETER_MAP{
     "frequency",
