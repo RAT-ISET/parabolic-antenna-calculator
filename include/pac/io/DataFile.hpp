@@ -11,6 +11,7 @@
 #include <fstream>
 #include <array>
 #include <optional>
+#include <sstream>
 #include <pac/core/Definition.hpp>
 
 using namespace std;
@@ -25,7 +26,9 @@ public:
     optional<double> deleteParameter(size_t index);
     optional<double> getParameter(size_t index) const;
     ParameterList& getParameterList();
-    string info(size_t index);
-    string info();
+    void info(ostringstream& builder, size_t index) const;
+    void info(ostringstream& builder) const;
+    string info(size_t index) const;
+    string info() const;
     void save();
 };

@@ -54,6 +54,35 @@ ParameterList& DataFile::getParameterList()
     return parameters_;
 }
 
+void DataFile::info(ostringstream& builder, const size_t index) const
+{
+    builder << PARAMETER_MAP[index] << ": ";
+    if (parameters_[index].has_value()) builder << parameters_[index].value();
+    else builder << "NULL";
+}
+
+void DataFile::info(ostringstream& builder) const
+{
+    for (size_t i = 0; i < PARAMETER_MAP.size(); i++)
+    {
+        info(builder, i);
+    }
+}
+
+string DataFile::info(const size_t index) const
+{
+    ostringstream builder;
+    info(builder, index);
+    return builder.str();
+}
+
+string DataFile::info() const
+{
+    ostringstream builder;
+    info(builder);
+    return builder.str();
+}
+
 void DataFile::save()
 {
     file_.seekp(1);
