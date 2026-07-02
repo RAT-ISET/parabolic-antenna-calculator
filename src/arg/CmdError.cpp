@@ -3,12 +3,13 @@
 // Licensed under the MIT.
 // https://github.com/RAT-ISET/parabolic-antenna-calculater
 // ==============================================================
-// Path /src/core/Entry.cpp
-// Entry for antenna.
+// Path /src/arg/CmdError.cpp
+// Error for command line.
 
-#include <pac/core/Entry.hpp>
+#include <pac/arg/CmdError.hpp>
 
-void AntennaEntry::addParameter(const size_t index, double value)
+string CmdError::getMessage() const
 {
-    this->parameter_[index] = value;
+    const string_view message = error_messages[static_cast<int>(type_)];
+    return string(message) + "\n" + "Input: " + input_;
 }

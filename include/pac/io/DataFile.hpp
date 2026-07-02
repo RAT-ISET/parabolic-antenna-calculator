@@ -25,5 +25,7 @@ public:
     optional<double> deleteParameter(size_t index);
     optional<double> getParameter(size_t index) const;
     ParameterList& getParameterList();
+    string info(size_t index);
+    string info();
     void save();
 };

@@ -8,11 +8,12 @@
 
 #include <filesystem>
 #include <pac/io/PacProject.hpp>
+#include <utility>
 
 using namespace std;
 
 Project::Project(string path, DataFile data_file)
-: path_(path)
+: path_(std::move(path))
 , data_file_(std::move(data_file)) {}
 
 Project Project::init(string path)

@@ -27,5 +27,7 @@ class Logger
 public:
     Logger() = default;
     void addEntry(LogEntry entry);
+    void error(string message);
+    void info(string message);
     string recordLog();
 };

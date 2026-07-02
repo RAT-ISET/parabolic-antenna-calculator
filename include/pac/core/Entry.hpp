@@ -17,14 +17,11 @@
 
 using namespace std;
 
-optional<size_t> matchParameter(const string& name);
-
 struct AntennaEntry
 {
     ParameterList parameter_;
     AntennaEntry() = default;
     void addParameter(size_t index, double value);
-    optional<size_t> addParameterByName(const string& name, double value);
     [[nodiscard]] expected<AntennaEntry, AntennaEntryError> calculate(AntennaEntry antenna) const;
 };
 

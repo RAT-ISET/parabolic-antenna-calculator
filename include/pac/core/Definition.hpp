@@ -9,10 +9,14 @@
 #pragma once
 
 #include <array>
+#include <optional>
+#include <pac/core/Logger.hpp>
 
 using namespace std;
 
 using ParameterList = array<optional<double>, 8>;
+
+inline Logger logger = Logger();
 
 constexpr array PARAMETER_MAP{
     "frequency",
