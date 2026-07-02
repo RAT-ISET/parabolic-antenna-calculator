@@ -11,7 +11,7 @@
 
 DataFile::DataFile(fstream file)
 {
-    this->file_ = std::move(file);
+    file_ = std::move(file);
     uint8_t flag;
     file.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
 
@@ -21,10 +21,10 @@ DataFile::DataFile(fstream file)
         {
             double data;
             file.read(reinterpret_cast<char*>(&data), sizeof(double));
-            this->parameters_[i] = data;
+            parameters_[i] = data;
         } else
         {
-            this->parameters_[i] = nullopt;
+            parameters_[i] = nullopt;
         }
         flag = flag >> 1;
     }

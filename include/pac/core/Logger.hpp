@@ -11,23 +11,26 @@
 #include <vector>
 #include <optional>
 #include <string>
+#include <pac/io/LogFile.hpp>
 
 using namespace std;
 
 struct LogEntry
 {
     vector<size_t> input_;
-    optional<vector<size_t>> output_;
-    string recordLogEntry();
+    optional<size_t> output_;
+    void recordLogEntryBuilder(ostringstream& stream) const;
+    string recordLogEntry() const;
 };
 
 class Logger
 {
     vector<LogEntry> entries_;
+    LogFile& file_;
 public:
-    Logger() = default;
+    explicit Logger(LogFile& file);
     void addEntry(LogEntry entry);
-    void error(string message);
-    void info(string message);
-    string recordLog();
+    void error(string_view message) const;
+    void info(string_view message) const;
+    void recordEntries() const;
 };

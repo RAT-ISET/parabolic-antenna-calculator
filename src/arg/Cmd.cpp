@@ -66,7 +66,7 @@ int command(const int argc, char* argv[])
             auto unmatch_name = matchName(name.value());
             if (!unmatch_name.has_value())
             {
-                logger.error(unmatch_name.error().getMessage() + name.value());
+                logger->error(unmatch_name.error().getMessage() + name.value());
                 return EXIT_SUCCESS;
             }
             matched_name = unmatch_name.value();
@@ -77,19 +77,19 @@ int command(const int argc, char* argv[])
             if (auto unmatch_value = matchValue(value); unmatch_value.has_value())
             {
                 data_file.setParameter(matched_name, unmatch_value.value());
-                logger.info("Add parameter" + value + " to " + name.value());
+                logger->info("Add parameter" + value + " to " + name.value());
             } else
             {
-                logger.error(unmatch_value.error().getMessage() + value);
+                logger->error(unmatch_value.error().getMessage() + value);
             }
         } else if (*para_delete)
         {
             data_file.deleteParameter(matched_name);
-            logger.info("Delete parameter" + value);
+            logger->info("Delete parameter" + value);
         } else if (*para_show)
         {
-            if (name.has_value()) logger.info(data_file.info(matched_name));
-            else logger.info(data_file.info());
+            if (name.has_value()) logger->info(data_file.info(matched_name));
+            else logger->info(data_file.info());
         }
     }
 

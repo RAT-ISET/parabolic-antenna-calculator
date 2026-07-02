@@ -16,7 +16,7 @@ using namespace std;
 
 using ParameterList = array<optional<double>, 8>;
 
-inline Logger logger = Logger();
+inline Logger* logger;
 
 constexpr array PARAMETER_MAP{
     "frequency",
