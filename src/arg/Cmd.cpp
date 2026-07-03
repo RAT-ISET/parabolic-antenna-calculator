@@ -89,8 +89,9 @@ int command(const int argc, char* argv[])
             logger.debug("[arg/Cmd.cpp:command] Input the set command");
             if (auto unmatch_value = matchValue(value); unmatch_value.has_value())
             {
-                data_file.setParameter(matched_name, unmatch_value.value());
-                logger.info("[arg/Cmd.cpp:command] Add parameter" + value + " to " + name.value());
+                auto unmatched_old_value = data_file.setParameter(matched_name, unmatch_value.value());
+                string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
+                logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + value);
             } else
             {
                 logger.error(unmatch_value.error().getMessage() + value);
