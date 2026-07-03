@@ -13,6 +13,7 @@
 #include <pac/io/PacProject.hpp>
 #include <pac/arg/CmdError.hpp>
 #include <pac/core/Logger.hpp>
+#include <pac/core/Message.hpp>
 
 using namespace std;
 
@@ -25,11 +26,7 @@ int command(const int argc, char* argv[])
         "Parabolic Antenna Calculator Version 0.1.0"
     );
 
-    app.footer(
-        R"(Copyright (c) 2026 Team ISET
-        License: MIT
-        https://github.com/RAT-ISET/parabolic-antenna-calculator
-    )");
+    app.footer(HELP_FOOTER.data());
 
     bool debug_mode = false;
     app.add_flag("--debug", debug_mode, "Enable debug mode");
@@ -39,6 +36,7 @@ int command(const int argc, char* argv[])
     auto* init = app.add_subcommand("init", "Initialize the project.");
 
     auto* para = app.add_subcommand("para", "About the parameter.");
+    para->footer(PARA_HELP_FOOTER.data());
     optional<string> name;
     string value;
     auto* para_set = para->add_subcommand("set", "set the parameter");
