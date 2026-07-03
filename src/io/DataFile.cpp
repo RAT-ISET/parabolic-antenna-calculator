@@ -7,6 +7,7 @@
 // Reader and writer for data file.
 
 #include <pac/io/DataFile.hpp>
+#include <pac/io/IoError.hpp>
 
 void DataFile::initDataFile(ofstream& file)
 {
@@ -16,25 +17,26 @@ void DataFile::initDataFile(ofstream& file)
 DataFile::DataFile(fstream file)
 {
     logger.debug("[io::DataFile::DataFile] Initialize the DataFile");
-    file_ = std::move(file);
+    data_file_ = std::move(file);
 
-    if (file_.fail() || !file_.is_open())
+    if (data_file_.fail() || !data_file_.is_open())
     {
         logger.error("[io::DataFile::DataFile] Data file was cannot opened");
+        analyzeFileError(data_file_);
         exit(-1);
     }
 
     logger.debug("[io::DataFile::DataFile] Data file was opened");
 
     uint8_t flag;
-    file_.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
+    data_file_.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
 
     for (int i = 7; i > 0; i--)
     {
         if (flag & 0x01)
         {
             double data;
-            file_.read(reinterpret_cast<char*>(&data), sizeof(double));
+            data_file_.read(reinterpret_cast<char*>(&data), sizeof(double));
             parameters_[i] = data;
         } else
         {
@@ -72,13 +74,14 @@ void DataFile::info(ostringstream& builder, const size_t index) const
 {
     builder << PARAMETER_MAP[index] << ": ";
     if (parameters_[index].has_value()) builder << parameters_[index].value();
-    else builder << "NULL";
+    else builder << "Empty";
 }
 
 void DataFile::info(ostringstream& builder) const
 {
     for (size_t i = 0; i < PARAMETER_MAP.size(); i++)
     {
+        builder << endl;
         info(builder, i);
     }
 }
@@ -99,20 +102,26 @@ string DataFile::info() const
 
 void DataFile::save()
 {
-    file_.seekp(1);
+    data_file_.seekp(1);
     uint8_t flag = 0;
     for (int i = 0; i < 7; i++)
     {
         if (parameters_[i].has_value())
         {
-            file_.write(reinterpret_cast<char*>(&parameters_[i].value()), sizeof(double));
+            data_file_.write(reinterpret_cast<char*>(&parameters_[i].value()), sizeof(double));
         } else
         {
-            file_.write(nullptr, sizeof(double));
+            data_file_.write(nullptr, sizeof(double));
             flag = flag | 0x01;
         }
         flag = flag << 1;
     }
-    file_.seekp(0);
-    file_.write(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
+    data_file_.seekp(0);
+    data_file_.write(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
+}
+
+void DataFile::close()
+{
+    data_file_.close();
+    free(this);
 }

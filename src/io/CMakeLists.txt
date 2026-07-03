@@ -1,3 +1,3 @@
-add_library(ParabolicAntennaCalculatorIo DataFile.cpp LogFile.cpp PacProject.cpp)
+add_library(ParabolicAntennaCalculatorIo DataFile.cpp LogFile.cpp PacProject.cpp IoError.cpp)
 target_include_directories(ParabolicAntennaCalculatorIo PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(ParabolicAntennaCalculatorIo PRIVATE ParabolicAntennaCalculatorCore)

@@ -24,3 +24,9 @@ void LogFile::recordLog(const string_view header, const string_view message)
     log_file_ << header;
     record(message);
 }
+
+void LogFile::close()
+{
+    log_file_.close();
+    free(this);
+}

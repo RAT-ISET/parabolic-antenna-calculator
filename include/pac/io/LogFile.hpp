@@ -30,4 +30,5 @@ class LogFile
 public:
     explicit LogFile(ofstream file);
     void recordLog(string_view header, string_view message);
+    void close();
 };

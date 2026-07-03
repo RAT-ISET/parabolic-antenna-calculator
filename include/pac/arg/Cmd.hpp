@@ -11,10 +11,12 @@
 #include <string>
 #include <expected>
 #include <pac/arg/CmdError.hpp>
+#include <pac/io/PacProject.hpp>
 
 using namespace std;
 
 int command(int argc, char* argv[]);
+int shutdown(Project project);
 
 expected<size_t, CmdError> matchName(const string& name);
 expected<double, CmdError> matchValue(const string& value);

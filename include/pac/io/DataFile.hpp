@@ -20,7 +20,7 @@ constexpr array<char, DATA_FILE_SIZE> DATA_FILE_INITIALIZER{};
 
 class DataFile
 {
-    fstream file_;
+    fstream data_file_;
     ParameterList parameters_;
 public:
     static void initDataFile(ofstream& file);
@@ -34,4 +34,5 @@ public:
     string info(size_t index) const;
     string info() const;
     void save();
+    void close();
 };

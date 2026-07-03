@@ -33,10 +33,10 @@ int command(const int argc, char* argv[])
 
     bool debug_mode = false;
     app.add_flag("--debug", debug_mode, "Enable debug mode");
+    string path;
+    app.add_option("path", path, "Path of the project.")->required();
 
     auto* init = app.add_subcommand("init", "Initialize the project.");
-    string path;
-    init->add_option("path", path, "Path of the project.")->required();
 
     auto* para = app.add_subcommand("para", "About the parameter.");
     optional<string> name;
@@ -66,24 +66,29 @@ int command(const int argc, char* argv[])
         return EXIT_SUCCESS;
     }
 
-    Project project = Project::open("");
+    Project project = Project::open(path);
+    logger.debug("[arg/Cmd.cpp:command] Project was built");
 
     if (*para)
     {
+        logger.debug("[arg/Cmd.cpp:command] Input the para command");
         size_t matched_name;
         if (name.has_value())
         {
+            logger.debug("[arg/Cmd.cpp:command] Has parameter name");
             auto unmatch_name = matchName(name.value());
             if (!unmatch_name.has_value())
             {
                 logger.error(unmatch_name.error().getMessage() + name.value());
-                return EXIT_SUCCESS;
+                return shutdown(std::move(project));
             }
             matched_name = unmatch_name.value();
+            logger.debug("[arg/Cmd.cpp:command] Matched the parameter name");
         }
         DataFile& data_file = project.getDataFile();
         if (*para_set)
         {
+            logger.debug("[arg/Cmd.cpp:command] Input the set command");
             if (auto unmatch_value = matchValue(value); unmatch_value.has_value())
             {
                 data_file.setParameter(matched_name, unmatch_value.value());
@@ -94,15 +99,26 @@ int command(const int argc, char* argv[])
             }
         } else if (*para_delete)
         {
+            logger.debug("[arg/Cmd.cpp:command] Input the delete command");
             data_file.deleteParameter(matched_name);
             logger.info("[arg/Cmd.cpp:command] Delete parameter" + value);
         } else if (*para_show)
         {
+            logger.debug("[arg/Cmd.cpp:command] Input the show command");
             if (name.has_value()) logger.info(data_file.info(matched_name));
             else logger.info(data_file.info());
         }
     }
 
+    logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
+
+    return shutdown(std::move(project));
+}
+
+int shutdown(Project project)
+{
+    logger.info("[arg/Cmd.cpp:shutdown] Close the project");
+    project.close();
     return EXIT_SUCCESS;
 }
 

@@ -23,4 +23,5 @@ public:
     static Project open(string path);
     DataFile& getDataFile();
     LogFile& getLogFile();
+    void close();
 };

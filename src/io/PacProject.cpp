@@ -16,7 +16,10 @@ using namespace std;
 Project::Project(string path, DataFile data_file, LogFile log_file)
 : path_(std::move(path))
 , data_file_(std::move(data_file))
-, log_file_(std::move(log_file)) {}
+, log_file_(std::move(log_file))
+{
+    logger.debug("[io/ParProject.cpp:Project] The project was loaded");
+}
 
 Project Project::init(string path)
 {
@@ -42,7 +45,9 @@ Project Project::open(string path)
     logger.info("[io/ParProject.cpp:open] LogFile was loaded");
     DataFile data(std::move(data_file_path));
     logger.info("[io/ParProject.cpp:open] DataFile was loaded");
-    return Project(std::move(path), std::move(data), std::move(log));
+    Project project(std::move(path), std::move(data), std::move(log));
+    logger.load(project.getLogFile());
+    return project;
 }
 
 DataFile& Project::getDataFile()
@@ -53,4 +58,13 @@ DataFile& Project::getDataFile()
 LogFile& Project::getLogFile()
 {
     return log_file_;
+}
+
+void Project::close()
+{
+    logger.debug("[io/Project.cpp:close] Close the data file");
+    data_file_.close();
+    logger.debug("[io/Project.cpp:close] Close the log file");
+    log_file_.close();
+    free(this);
 }
