@@ -16,7 +16,7 @@ LogFile::LogFile(ofstream file)
 
 void LogFile::record(const string_view message)
 {
-    log_file_ << "[" << THREAD_ID << "][" << getFormatedTime() << "]" << message;
+    log_file_ << "[" << THREAD_ID << "][" << getFormatedTime() << "]" << message << endl;
 }
 
 void LogFile::recordLog(const string_view header, const string_view message)

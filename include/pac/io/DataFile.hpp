@@ -8,19 +8,22 @@
 
 #pragma once
 
-#include <fstream>
+#include <iostream>
 #include <array>
 #include <optional>
-#include <sstream>
 #include <pac/core/Definition.hpp>
 
 using namespace std;
+
+constexpr size_t DATA_FILE_SIZE = sizeof(uint8_t) + sizeof(double) * 8;
+constexpr array<char, DATA_FILE_SIZE> DATA_FILE_INITIALIZER{};
 
 class DataFile
 {
     fstream file_;
     ParameterList parameters_;
 public:
+    static void initDataFile(ofstream& file);
     explicit DataFile(fstream file);
     optional<double> setParameter(size_t index, double value);
     optional<double> deleteParameter(size_t index);

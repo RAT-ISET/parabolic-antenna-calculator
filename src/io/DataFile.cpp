@@ -8,14 +8,23 @@
 
 #include <pac/io/DataFile.hpp>
 
+void DataFile::initDataFile(ofstream& file)
+{
+    file.write(DATA_FILE_INITIALIZER.data(), DATA_FILE_SIZE);
+}
+
 DataFile::DataFile(fstream file)
 {
+    logger.debug("[io::DataFile::DataFile] Initialize the DataFile");
     file_ = std::move(file);
 
-    if (!file_.is_open())
+    if (file_.fail() || !file_.is_open())
     {
-        file_.write(nullptr, sizeof(uint8_t) + sizeof(double) * PARAMETER_MAP.size());
+        logger.error("[io::DataFile::DataFile] Data file was cannot opened");
+        exit(-1);
     }
+
+    logger.debug("[io::DataFile::DataFile] Data file was opened");
 
     uint8_t flag;
     file_.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));

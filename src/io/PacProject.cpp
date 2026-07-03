@@ -23,19 +23,25 @@ Project Project::init(string path)
     logger.debug("[io/ParProject.cpp:init] Initialize the project");
     filesystem::create_directories(path);
     logger.debug("[io/ParProject.cpp:init] Directories was created");
+    ofstream data_file(path + "/data.bin", ios::binary);
+    logger.debug("[io/ParProject.cpp:init] Data file was created");
+    DataFile::initDataFile(data_file);
+    logger.debug("[io/ParProject.cpp:init] Data file was initialized");
+    data_file.close();
     return open(std::move(path));
 }
 
 Project Project::open(string path)
 {
     logger.debug("[io/ParProject.cpp:open] Open the project");
-    fstream data_file_path(path + "/data.bin", fstream::out | fstream::in | fstream::binary);
-    ofstream log_file_path(path + "/log.txt");
+    ofstream log_file_path(path + "/log.txt", ios::app);
+    fstream data_file_path(path + "/data.bin", ios::out | ios::in | ios::binary);
     logger.debug("[io/ParProject.cpp:open] File was opened");
-    DataFile data(std::move(data_file_path));
     LogFile log(std::move(log_file_path));
     logger.load(log);
-    logger.debug("[io/ParProject.cpp:open] LogFile was loaded");
+    logger.info("[io/ParProject.cpp:open] LogFile was loaded");
+    DataFile data(std::move(data_file_path));
+    logger.info("[io/ParProject.cpp:open] DataFile was loaded");
     return Project(std::move(path), std::move(data), std::move(log));
 }
 
