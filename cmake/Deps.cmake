@@ -9,5 +9,5 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(CLI11)
 
-add_library(ParabolicAntennaCalculaterDeps INTERFACE)
-target_link_libraries(ParabolicAntennaCalculaterDeps INTERFACE CLI11::CLI11)
+add_library(ParabolicAntennaCalculatorDeps INTERFACE)
+target_link_libraries(ParabolicAntennaCalculatorDeps INTERFACE CLI11::CLI11)

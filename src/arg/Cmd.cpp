@@ -1,7 +1,7 @@
 // ==============================================================
 // Copyright (c) 2026 Team ISET
 // Licensed under the MIT.
-// https://github.com/RAT-ISET/parabolic-antenna-calculater
+// https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
 // Path /src/arg/Cmd.cpp
 // Command line handler.
@@ -18,17 +18,17 @@ using namespace std;
 
 int command(const int argc, char* argv[])
 {
-    CLI::App app("Parabolic Antenna Calculater");
+    CLI::App app("Parabolic Antenna Calculator");
 
     app.set_version_flag(
         "-v,--version",
-        "Parabolic Antenna Calculater Version 0.1.0"
+        "Parabolic Antenna Calculator Version 0.1.0"
     );
 
     app.footer(
         R"(Copyright (c) 2026 Team ISET
         License: MIT
-        https://github.com/RAT-ISET/parabolic-antenna-calculater
+        https://github.com/RAT-ISET/parabolic-antenna-calculator
     )");
 
     auto* init = app.add_subcommand("init", "Initialize the project.");

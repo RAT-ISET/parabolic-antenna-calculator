@@ -1,7 +1,7 @@
 // ==============================================================
 // Copyright (c) 2026 Team ISET
 // Licensed under the MIT.
-// https://github.com/RAT-ISET/parabolic-antenna-calculater
+// https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
 // Path /include/pac/arg/CmdError.hpp
 // Header file of the error for command line.
