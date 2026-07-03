@@ -29,6 +29,5 @@ class LogFile
     void record(string_view message);
 public:
     explicit LogFile(ofstream file);
-    void recordLog(string_view message);
-    void recordError(string_view message);
+    void recordLog(string_view header, string_view message);
 };

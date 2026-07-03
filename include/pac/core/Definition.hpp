@@ -17,7 +17,7 @@ using namespace std;
 
 using ParameterList = array<optional<double>, 8>;
 
-inline Logger* logger;
+inline Logger logger;
 
 static size_t THREAD_ID = hash<thread::id>{}(this_thread::get_id());
 

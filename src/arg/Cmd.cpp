@@ -31,6 +31,9 @@ int command(const int argc, char* argv[])
         https://github.com/RAT-ISET/parabolic-antenna-calculator
     )");
 
+    bool debug_mode = false;
+    app.add_flag("--debug", debug_mode, "Enable debug mode");
+
     auto* init = app.add_subcommand("init", "Initialize the project.");
     string path;
     init->add_option("path", path, "Path of the project.")->required();
@@ -51,9 +54,16 @@ int command(const int argc, char* argv[])
 
     CLI11_PARSE(app, argc, argv);
 
+    if (debug_mode) logger.enableDebug();
+
+    logger.debug("[arg/Cmd.cpp:command] The command handler was parsed");
+
     if (*init)
     {
+        logger.debug("[arg/Cmd.cpp:command] Input the init command");
         Project::init(path);
+        logger.debug("[arg/Cmd.cpp:command] The init command was finished");
+        return EXIT_SUCCESS;
     }
 
     Project project = Project::open("");
@@ -66,7 +76,7 @@ int command(const int argc, char* argv[])
             auto unmatch_name = matchName(name.value());
             if (!unmatch_name.has_value())
             {
-                logger->error(unmatch_name.error().getMessage() + name.value());
+                logger.error(unmatch_name.error().getMessage() + name.value());
                 return EXIT_SUCCESS;
             }
             matched_name = unmatch_name.value();
@@ -77,19 +87,19 @@ int command(const int argc, char* argv[])
             if (auto unmatch_value = matchValue(value); unmatch_value.has_value())
             {
                 data_file.setParameter(matched_name, unmatch_value.value());
-                logger->info("Add parameter" + value + " to " + name.value());
+                logger.info("[arg/Cmd.cpp:command] Add parameter" + value + " to " + name.value());
             } else
             {
-                logger->error(unmatch_value.error().getMessage() + value);
+                logger.error(unmatch_value.error().getMessage() + value);
             }
         } else if (*para_delete)
         {
             data_file.deleteParameter(matched_name);
-            logger->info("Delete parameter" + value);
+            logger.info("[arg/Cmd.cpp:command] Delete parameter" + value);
         } else if (*para_show)
         {
-            if (name.has_value()) logger->info(data_file.info(matched_name));
-            else logger->info(data_file.info());
+            if (name.has_value()) logger.info(data_file.info(matched_name));
+            else logger.info(data_file.info());
         }
     }
 

@@ -6,21 +6,26 @@
 // Path /src/io/DataFile.cpp
 // Reader and writer for data file.
 
-#include <cstdint>
 #include <pac/io/DataFile.hpp>
 
 DataFile::DataFile(fstream file)
 {
     file_ = std::move(file);
+
+    if (!file_.is_open())
+    {
+        file_.write(nullptr, sizeof(uint8_t) + sizeof(double) * PARAMETER_MAP.size());
+    }
+
     uint8_t flag;
-    file.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
+    file_.read(reinterpret_cast<char*>(&flag), sizeof(uint8_t));
 
     for (int i = 7; i > 0; i--)
     {
         if (flag & 0x01)
         {
             double data;
-            file.read(reinterpret_cast<char*>(&data), sizeof(double));
+            file_.read(reinterpret_cast<char*>(&data), sizeof(double));
             parameters_[i] = data;
         } else
         {

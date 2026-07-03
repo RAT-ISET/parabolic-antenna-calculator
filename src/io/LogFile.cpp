@@ -16,17 +16,11 @@ LogFile::LogFile(ofstream file)
 
 void LogFile::record(const string_view message)
 {
-    log_file_ << "[" << THREAD_ID << "][" << getFormatedTime() << "] " << message;
+    log_file_ << "[" << THREAD_ID << "][" << getFormatedTime() << "]" << message;
 }
 
-void LogFile::recordLog(const string_view message)
+void LogFile::recordLog(const string_view header, const string_view message)
 {
-    log_file_ << "[INFO]";
-    record(message);
-}
-
-void LogFile::recordError(string_view message)
-{
-    log_file_ << "[ERROR]";
+    log_file_ << header;
     record(message);
 }

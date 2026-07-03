@@ -4,7 +4,7 @@
 // https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
 // Path /include/pac/core/Logger.hpp
-// Header file of the calculater log recorder.
+// Header file of the calculator log recorder.
 
 #pragma once
 
@@ -20,17 +20,22 @@ struct LogEntry
     vector<size_t> input_;
     optional<size_t> output_;
     void recordLogEntryBuilder(ostringstream& stream) const;
-    string recordLogEntry() const;
+    [[nodiscard]] string recordLogEntry() const;
 };
 
 class Logger
 {
     vector<LogEntry> entries_;
-    LogFile& file_;
+    LogFile* file_ = nullptr;
+    bool loaded_ = false;
+    bool debug_{};
 public:
-    explicit Logger(LogFile& file);
+    explicit Logger();
     void addEntry(LogEntry entry);
     void error(string_view message) const;
     void info(string_view message) const;
+    void debug(string_view message) const;
     void recordEntries() const;
+    void load(LogFile& file);
+    void enableDebug();
 };

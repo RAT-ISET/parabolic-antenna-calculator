@@ -4,7 +4,7 @@
 // https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
 // Path /src/core/Logger.cpp
-// Calculater log recorder.
+// Calculator log recorder.
 
 #include <pac/core/Logger.hpp>
 #include <iostream>
@@ -14,7 +14,7 @@
 void LogEntry::recordLogEntryBuilder(ostringstream& stream) const
 {
     stream << "Input Parameter: ";
-    for (int i = 0; i < input_.size(); i++) stream << PARAMETER_MAP[input_[i]] << " ";
+    for (const size_t i : input_) stream << PARAMETER_MAP[i] << " ";
     if (output_.has_value()) stream << "Output Parameter: " << output_.value() << endl;
     else stream << "No Output Parameter" << endl;
 }
@@ -26,9 +26,8 @@ string LogEntry::recordLogEntry() const
     return result.str();
 }
 
-Logger::Logger(LogFile& file)
+Logger::Logger()
 : entries_(vector<LogEntry>())
-, file_(file)
 {}
 
 void Logger::addEntry(LogEntry entry)
@@ -38,19 +37,37 @@ void Logger::addEntry(LogEntry entry)
 
 void Logger::error(const string_view message) const
 {
-    file_.recordError(message);
+    if (loaded_) file_->recordLog("[ERROR]", message);
     cerr << "[ERROR]" << message << endl;
 }
 
 void Logger::info(const string_view message) const
 {
-    file_.recordLog(message);
+    if (loaded_) file_->recordLog("[INFO]", message);
     cout << "[INFO]" << message << endl;
+}
+
+void Logger::debug(const string_view message) const
+{
+    if (!debug_) return;
+    if (loaded_) file_->recordLog("[DEBUG]", message);
+    cout << "[DEBUG]" << message << endl;
 }
 
 void Logger::recordEntries() const
 {
     ostringstream result;
-    for (LogEntry entry : entries_) entry.recordLogEntryBuilder(result);
-    file_.recordLog(result.str());
+    for (const LogEntry& entry : entries_) entry.recordLogEntryBuilder(result);
+    if (loaded_) file_->recordLog("[ACTION]", result.str());
+}
+
+void Logger::load(LogFile& file)
+{
+    file_ = &file;
+    loaded_ = true;
+}
+
+void Logger::enableDebug()
+{
+    debug_ = true;
 }

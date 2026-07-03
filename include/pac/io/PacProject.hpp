@@ -16,9 +16,11 @@ class Project
 {
     string path_;
     DataFile data_file_;
-    explicit Project(string path, DataFile data_file);
+    LogFile log_file_;
+    explicit Project(string path, DataFile data_file, LogFile log_file);
 public:
     static Project init(string path);
     static Project open(string path);
     DataFile& getDataFile();
+    LogFile& getLogFile();
 };
