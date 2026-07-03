@@ -106,9 +106,10 @@ int command(const int argc, char* argv[])
             if (name.has_value()) logger.info(data_file.info(matched_name));
             else logger.info(data_file.info());
         }
+    } else
+    {
+        logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
     }
-
-    logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
 
     return shutdown(std::move(project));
 }
