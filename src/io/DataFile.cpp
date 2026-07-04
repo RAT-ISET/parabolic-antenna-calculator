@@ -36,15 +36,17 @@ DataFile::DataFile(fstream file)
 
     for (int i = 7; i >= 0; i--)
     {
-        logger.debug(format("[io/DataFile.cpp:DataFile] The {} status {}", i, flag & 0x01));
+        logger.debug(format("[io/DataFile.cpp:DataFile] The location {} status {}", i, flag & 0x01));
         if (flag & 0x01)
         {
             double data;
             data_file_.read(reinterpret_cast<char*>(&data), sizeof(double));
+            logger.debug(format("[io/DataFile.cpp:DataFile] Read value {:.3f} from location {}", data, i));
             parameters_[i] = data;
         } else
         {
             parameters_[i] = nullopt;
+            logger.debug(format("[io/DataFile.cpp:DataFile] Read Empty from location {}", i));
         }
         flag = flag >> 1;
     }
@@ -110,17 +112,18 @@ void DataFile::save()
     uint8_t flag = 0;
     for (int i = 0; i < 7; i++)
     {
-        logger.debug(format("[io/DataFile.cpp:save] The {} status {}", i, parameters_[i].has_value()));
+        logger.debug(format("[io/DataFile.cpp:save] The location {} status {}", i, parameters_[i].has_value()));
         if (parameters_[i].has_value())
         {
             data_file_.write(reinterpret_cast<char*>(&parameters_[i].value()), sizeof(double));
-            logger.debug(format("[io/DataFile.cpp:save] Write {} at {}", parameters_[i].value(), i));
+            logger.debug(format("[io/DataFile.cpp:save] Write value {:.3f} to location {}", parameters_[i].value(), i));
             flag = flag | 0x01;
         } else
         {
             data_file_.write(EMPTY_PARAMETER_SIZE.data(), sizeof(double));
+            logger.debug(format("[io/DataFile.cpp:save] Write Empty to location {}", i));
         }
-        logger.debug(format("[io/DataFile.cpp:save] Write {} status at {}", i, parameters_[i].has_value()));
+        logger.debug(format("[io/DataFile.cpp:save] Write location {} status at {}", i, parameters_[i].has_value()));
         flag = flag << 1;
         logger.debug(format("[io/DataFile.cpp:save] Move flag to {:b}", flag));
     }
