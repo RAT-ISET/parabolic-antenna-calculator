@@ -13,12 +13,13 @@ using namespace std;
 
 enum class AntennaEntryErrorEnum
 {
-    MissingParameter,
-    InvalidParameter,
-    ConflictParameter,
-    MathematicalError,
-    UnknownParameter,
-    ErrorInputParameter,
+    MissingParameter = -1,
+    InvalidParameter = -2,
+    ConflictParameter = -3,
+    MathematicalError = -4,
+    ErrorInputParameter = -5,
+    UnknownParameter = -101,
+    UnknownError = -102,
 };
 
 struct AntennaEntryError

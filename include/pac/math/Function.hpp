@@ -41,7 +41,7 @@ constexpr auto UNMATCHED_INPUT_PARAMETER = AntennaEntryError(AntennaEntryErrorEn
 
 namespace Functions
 {
-    constexpr expected<double, AntennaEntryError> CalculateFocusDiameter
+    constexpr expected<double, AntennaEntryError> CalculateDiameter
         (const size_t want, const ParameterList& list)
     {
         if (want == 3)
@@ -71,7 +71,7 @@ namespace Functions
         return unexpected(UNMATCHED_INPUT_PARAMETER);
     }
 
-    constexpr expected<double, AntennaEntryError> CalculateWavelengthFrequency
+    constexpr expected<double, AntennaEntryError> CalculateWavelength
         (const size_t want, const ParameterList& list)
     {
         if (want == 0)
@@ -93,7 +93,7 @@ namespace Functions
         return unexpected(UNMATCHED_INPUT_PARAMETER);
     }
 
-    constexpr expected<double, AntennaEntryError> CalculateHeightFocusDiameter
+    constexpr expected<double, AntennaEntryError> CalculateHeight
         (const size_t want, const ParameterList& list)
     {
         if (want == 3)
@@ -121,7 +121,7 @@ namespace Functions
         return unexpected(UNMATCHED_INPUT_PARAMETER);
     }
 
-    constexpr expected<double, AntennaEntryError> CalculateEfficiencyIncreaseDiameterWavelength
+    constexpr expected<double, AntennaEntryError> CalculateIncrease
         (const size_t want, const ParameterList& list)
     {
         if (want == 1)

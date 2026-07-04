@@ -17,6 +17,7 @@ using namespace std;
 
 int command(int argc, char* argv[]);
 int shutdown(Project project);
+int shutdown(Project project, int code);
 
 expected<size_t, CmdError> matchName(const string& name);
 expected<double, CmdError> matchValue(const string& value);

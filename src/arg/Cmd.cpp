@@ -14,6 +14,7 @@
 #include <pac/arg/CmdError.hpp>
 #include <pac/core/Logger.hpp>
 #include <pac/core/Message.hpp>
+#include <pac/math/Calculate.hpp>
 
 using namespace std;
 
@@ -111,6 +112,30 @@ int command(const int argc, char* argv[])
             if (name.has_value()) logger.info(data_file.info(matched_name));
             else logger.info(data_file.info());
         }
+    } else if (*run)
+    {
+        logger.debug("[arg/Cmd.cpp:command] Input the run command");
+        Calculator calculator(project.getDataFile().getParameterList());
+        logger.debug("[arg/Cmd.cpp:command] The calculator entry was created");
+        optional<AntennaEntryError> error;
+        if (auto unmatched_value = matchValue(value); unmatched_value.has_value())
+        {
+            logger.debug(format("[arg/Cmd.cpp:command] Input step {}", unmatched_value.value()));
+            error = calculator.step(unmatched_value.has_value());
+        } else
+        {
+            logger.debug("[arg/Cmd.cpp:command] Not input step");
+            error = calculator.run();
+        }
+        if (error.has_value())
+        {
+            int code = static_cast<int>(error.value().type_);
+            logger.error(format("[arg/Cmd.cpp:command] Calculate error code {}", code));
+            shutdown(std::move(project), code);
+        } else
+        {
+            project.getDataFile().save();
+        }
     } else
     {
         logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
@@ -121,9 +146,14 @@ int command(const int argc, char* argv[])
 
 int shutdown(Project project)
 {
+    return shutdown(std::move(project), EXIT_SUCCESS);
+}
+
+int shutdown(Project project, const int code)
+{
     logger.info("[arg/Cmd.cpp:shutdown] Close the project");
     project.close();
-    return EXIT_SUCCESS;
+    return code;
 }
 
 expected<size_t, CmdError> matchName(const string& name)
