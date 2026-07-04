@@ -134,5 +134,4 @@ void DataFile::save()
 void DataFile::close()
 {
     data_file_.close();
-    free(this);
 }

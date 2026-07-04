@@ -66,5 +66,4 @@ void Project::close()
     data_file_.close();
     logger.debug("[io/Project.cpp:close] Close the log file");
     log_file_.close();
-    free(this);
 }

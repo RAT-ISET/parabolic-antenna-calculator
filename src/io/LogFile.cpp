@@ -28,5 +28,4 @@ void LogFile::recordLog(const string_view header, const string_view message)
 void LogFile::close()
 {
     log_file_.close();
-    free(this);
 }
