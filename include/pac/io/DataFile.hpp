@@ -17,6 +17,7 @@ using namespace std;
 
 constexpr size_t DATA_FILE_SIZE = sizeof(uint8_t) + sizeof(double) * 8;
 constexpr array<char, DATA_FILE_SIZE> DATA_FILE_INITIALIZER{};
+constexpr array<char, sizeof(double)> EMPTY_PARAMETER_SIZE{};
 
 class DataFile
 {

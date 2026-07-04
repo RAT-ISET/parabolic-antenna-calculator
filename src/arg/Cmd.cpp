@@ -92,6 +92,8 @@ int command(const int argc, char* argv[])
                 auto unmatched_old_value = data_file.setParameter(matched_name, unmatch_value.value());
                 string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
                 logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + value);
+                data_file.save();
+                logger.debug("[arg/Cmd.cpp:command] Data file was saved");
             } else
             {
                 logger.error(unmatch_value.error().getMessage() + value);
