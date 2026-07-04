@@ -103,6 +103,8 @@ int command(const int argc, char* argv[])
             logger.debug("[arg/Cmd.cpp:command] Input the delete command");
             data_file.deleteParameter(matched_name);
             logger.info("[arg/Cmd.cpp:command] Delete parameter" + value);
+            data_file.save();
+            logger.debug("[arg/Cmd.cpp:command] Data file was saved");
         } else if (*para_show)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the show command");
