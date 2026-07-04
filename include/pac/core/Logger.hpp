@@ -37,5 +37,6 @@ public:
     void debug(string_view message) const;
     void recordEntries() const;
     void load(LogFile& file);
+    void unload();
     void enableDebug();
 };

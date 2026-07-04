@@ -11,6 +11,8 @@
 #include <sstream>
 #include <pac/core/Definition.hpp>
 
+#include "CLI/Validators.hpp"
+
 void LogEntry::recordLogEntryBuilder(ostringstream& stream) const
 {
     stream << "Input Parameter: ";
@@ -65,6 +67,12 @@ void Logger::load(LogFile& file)
 {
     file_ = &file;
     loaded_ = true;
+}
+
+void Logger::unload()
+{
+    file_ = nullptr;
+    loaded_ = false;
 }
 
 void Logger::enableDebug()

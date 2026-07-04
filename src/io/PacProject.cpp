@@ -65,5 +65,6 @@ void Project::close()
     logger.debug("[io/Project.cpp:close] Close the data file");
     data_file_.close();
     logger.debug("[io/Project.cpp:close] Close the log file");
+    logger.unload();
     log_file_.close();
 }
