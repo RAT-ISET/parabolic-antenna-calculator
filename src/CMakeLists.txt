@@ -6,3 +6,4 @@ target_link_libraries(ParabolicAntennaCalculator PRIVATE ParabolicAntennaCalcula
 add_subdirectory(core)
 add_subdirectory(io)
 add_subdirectory(arg)
+add_subdirectory(math)

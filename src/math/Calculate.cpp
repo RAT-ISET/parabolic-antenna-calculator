@@ -3,13 +3,7 @@
 // Licensed under the MIT.
 // https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
-// Path /include/pac/math/Constants.hpp
-// Definition of constants in mathematics and physics.
+// Path /src/math/Calculate.cpp
+// Calculate the antenna parameter.
 
-#pragma once
-
-namespace Constants
-{
-    constexpr double C = 299792458.0;
-    constexpr double BACK_PI = 1 / numbers::pi;
-}
+#include <pac/math/Calculate.hpp>

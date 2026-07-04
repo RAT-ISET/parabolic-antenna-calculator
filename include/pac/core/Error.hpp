@@ -4,7 +4,7 @@
 // https://github.com/RAT-ISET/parabolic-antenna-calculator
 // ==============================================================
 // Path /include/pac/core/Error.hpp
-// Header file of the antenna calculater error.
+// Header file of the antenna calculator error.
 
 #pragma once
 #include <pac/core/Logger.hpp>
@@ -16,12 +16,17 @@ enum class AntennaEntryErrorEnum
     MissingParameter,
     InvalidParameter,
     ConflictParameter,
+    MathematicalError,
     UnknownParameter,
+    ErrorInputParameter,
 };
 
 struct AntennaEntryError
 {
     AntennaEntryErrorEnum type_;
-    Logger log_;
-    AntennaEntryError();
+    LogEntry log_;
+    AntennaEntryError() = default;
+    constexpr AntennaEntryError(AntennaEntryErrorEnum type, const LogEntry& log)
+        : type_(type)
+        , log_(log) {}
 };

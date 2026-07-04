@@ -21,6 +21,7 @@ struct LogEntry
     optional<size_t> output_;
     void recordLogEntryBuilder(ostringstream& stream) const;
     [[nodiscard]] string recordLogEntry() const;
+    constexpr LogEntry() = default;
 };
 
 class Logger
