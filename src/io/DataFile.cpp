@@ -34,21 +34,22 @@ DataFile::DataFile(fstream file)
 
     logger.debug(format("[io/DataFile.cpp:DataFile] flag: {:b}", flag));
 
-    for (int i = 7; i >= 0; i--)
+    for (int i = 0; i < 8; i++)
     {
         logger.debug(format("[io/DataFile.cpp:DataFile] The location {} status {}", i, flag & 0x01));
-        if (flag & 0x01)
+        if (flag & 0b10000000)
         {
             double data;
             data_file_.read(reinterpret_cast<char*>(&data), sizeof(double));
-            logger.debug(format("[io/DataFile.cpp:DataFile] Read value {:.3f} from location {}", data, i));
+            logger.debug(format("[io/DataFile.cpp:DataFile] Read value {:.3f} from location {} ptr {}", data, i, static_cast<streamoff>(data_file_.tellg()) - sizeof(double)));
             parameters_[i] = data;
         } else
         {
             parameters_[i] = nullopt;
-            logger.debug(format("[io/DataFile.cpp:DataFile] Read Empty from location {}", i));
+            data_file_.seekg(sizeof(double), ios::cur);
+            logger.debug(format("[io/DataFile.cpp:DataFile] Read Empty from location {} ptr {}", i, static_cast<streamoff>(data_file_.tellg()) - sizeof(double)));
         }
-        flag = flag >> 1;
+        flag = flag << 1;
     }
 }
 
@@ -110,21 +111,21 @@ void DataFile::save()
 {
     data_file_.seekp(1);
     uint8_t flag = 0;
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 8; i++)
     {
         logger.debug(format("[io/DataFile.cpp:save] The location {} status {}", i, parameters_[i].has_value()));
         if (parameters_[i].has_value())
         {
             data_file_.write(reinterpret_cast<char*>(&parameters_[i].value()), sizeof(double));
-            logger.debug(format("[io/DataFile.cpp:save] Write value {:.3f} to location {}", parameters_[i].value(), i));
+            logger.debug(format("[io/DataFile.cpp:save] Write value {:.3f} to location {} ptr {}", parameters_[i].value(), i, static_cast<streamoff>(data_file_.tellp()) - sizeof(double)));
             flag = flag | 0x01;
         } else
         {
             data_file_.write(EMPTY_PARAMETER_SIZE.data(), sizeof(double));
-            logger.debug(format("[io/DataFile.cpp:save] Write Empty to location {}", i));
+            logger.debug(format("[io/DataFile.cpp:save] Write Empty to location {} ptr {}", i, static_cast<streamoff>(data_file_.tellp()) - sizeof(double)));
         }
         logger.debug(format("[io/DataFile.cpp:save] Write location {} status at {}", i, parameters_[i].has_value()));
-        flag = flag << 1;
+        if (i != 7) flag = flag << 1;
         logger.debug(format("[io/DataFile.cpp:save] Move flag to {:b}", flag));
     }
 
