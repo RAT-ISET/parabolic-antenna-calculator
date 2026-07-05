@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cmath>
+#include <numbers>
 #include <pac/core/Error.hpp>
 #include <pac/math/Constants.hpp>
 
