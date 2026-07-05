@@ -1,0 +1,95 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - "main"
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure CMake
+        run: cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=Release
+          -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }}
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Package
+        working-directory: build
+        run: cpack -C Release
+
+      - name: Prepare Tools ( Linux )
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt update
+          sudo apt install rpm gnupg -y
+
+      - name: Prepare Tools ( Windows )
+        if: runner.os == 'Windows'
+        run: choco install wixtoolset openssl windows-sdk-10.0 -y
+
+      - name: Prepare to Sign ( Linux )
+        if: runner.os == 'Linux'
+        run: echo "${{ secrets.GPG_KEY }}" | gpg --import
+
+      - name: Prepare to Sign ( Windows )
+        if: runner.os == 'Windows'
+        working-directory: dist
+        shell: pwsh
+        run: |
+          Set-Content -Path codesign.key -Value "${{ secrets.CODE_SIGN_KEY }}"
+          Set-Content -Path codesign.crt -Value "${{ secrets.CODE_SIGN_CRT }}"
+          Set-Content -Path intermediate.crt -Value "${{ secrets.INTERMEDIATE_CRT }}"
+          openssl pkcs12 -export -inkey codesign.key -in codesign.crt -certfile intermediate.crt -out codesign.pfx -passout ${{ secrets.PASS }}
+
+      - name: Sign Software ( Linux )
+        if: runner.os == 'Linux'
+        run: rpm --addsign *.rpm
+
+      - name: Sign Software ( Windows )
+        if: runner.os == 'Windows'
+        working-directory: dist
+        shell: pwsh
+        run: |
+          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr https://timestamp.digicert.com /td SHA256 *.msi
+          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr https://timestamp.digicert.com /td SHA256 *.exe
+          Remove-Item codesign*
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  upload:
+    if: false
+    needs: release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist
+
+      - name: Create GitHub Release
+        run: echo "TODO"
