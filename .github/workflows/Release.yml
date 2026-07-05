@@ -50,6 +50,7 @@ jobs:
           wix extension add --global WixToolset.UI.wixext/4.0.4
 
       - name: Install and Configure the Windows SDK
+        if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Package
@@ -82,8 +83,8 @@ jobs:
         working-directory: dist
         shell: pwsh
         run: |
-          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr https://timestamp.digicert.com /td SHA256 *.msi
-          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr https://timestamp.digicert.com /td SHA256 *.exe
+          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 *.msi
+          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 *.exe
           Remove-Item codesign*
 
       - name: Info Output
@@ -92,7 +93,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: dist
+          name: dist-${{ runner.os }}
           path: dist/*
           compression-level: '0'
 
