@@ -47,6 +47,11 @@ jobs:
         working-directory: build
         run: cpack -C Release --debug
 
+      - name: Error Message ( Windows )
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cat D:/a/parabolic-antenna-calculator/parabolic-antenna-calculator/build/_CPack_Packages/win64/NSIS/NSISOutput.log
+
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
         run: echo "${{ secrets.GPG_KEY }}" | gpg --import
