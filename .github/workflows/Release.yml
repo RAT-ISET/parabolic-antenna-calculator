@@ -89,6 +89,7 @@ jobs:
 
       - name: Info Output
         run: find dist -type f
+        shell: bash
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
