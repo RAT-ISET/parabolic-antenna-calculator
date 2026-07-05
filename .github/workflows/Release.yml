@@ -41,16 +41,14 @@ jobs:
 
       - name: Prepare Tools ( Windows )
         if: runner.os == 'Windows'
-        run: choco install wixtoolset openssl windows-sdk-10.0 nsis -y
+        run: |
+          choco install openssl windows-sdk-10.0 nsis -y
+          dotnet tool install --global wix --version 4.0.4
+          wix extension add --global WixToolset.UI.wixext/4.0.4
 
       - name: Package
         working-directory: build
-        run: cpack -C Release --debug
-
-      - name: Error Message ( Windows )
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: cat D:/a/parabolic-antenna-calculator/parabolic-antenna-calculator/build/_CPack_Packages/win64/NSIS/NSISOutput.log
+        run: cpack -C Release --
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
