@@ -45,9 +45,12 @@ jobs:
       - name: Prepare Tools ( Windows )
         if: runner.os == 'Windows'
         run: |
-          choco install openssl windows-sdk-10.0 nsis -y
+          choco install openssl nsis -y
           dotnet tool install --global wix --version 4.0.4
           wix extension add --global WixToolset.UI.wixext/4.0.4
+
+      - name: Install and Configure the Windows SDK
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Package
         working-directory: build
