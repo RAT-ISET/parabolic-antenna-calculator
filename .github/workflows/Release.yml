@@ -65,7 +65,7 @@ jobs:
           Set-Content -Path codesign.key -Value "${{ secrets.CODE_SIGN_KEY }}"
           Set-Content -Path codesign.crt -Value "${{ secrets.CODE_SIGN_CRT }}"
           Set-Content -Path intermediate.crt -Value "${{ secrets.INTERMEDIATE_CRT }}"
-          openssl pkcs12 -export -inkey codesign.key -in codesign.crt -certfile intermediate.crt -out codesign.pfx -passout ${{ secrets.PASS }}
+          openssl pkcs12 -export -inkey codesign.key -in codesign.crt -certfile intermediate.crt -out codesign.pfx -passout pass:${{ secrets.PASS }}
 
       - name: Sign Software ( Linux )
         if: runner.os == 'Linux'
