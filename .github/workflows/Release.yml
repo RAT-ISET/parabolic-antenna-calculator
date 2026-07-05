@@ -45,7 +45,7 @@ jobs:
 
       - name: Package
         working-directory: build
-        run: cpack -C Release
+        run: cpack -C Release --debug
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
