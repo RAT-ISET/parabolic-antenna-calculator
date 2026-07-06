@@ -60,15 +60,7 @@ jobs:
         run: |
           echo "$GITHUB_WORKSPACE"
           find $GITHUB_WORKSPACE/out -print
-          docker build -f Dockerfile -t arch-builder .
-          docker run --rm -i \
-            -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
-            -v "$GITHUB_WORKSPACE/out/install:/opt/work/install:ro" \
-            -v "./workspace:/workspace" \
-            -v "./pkg.sh:/home/builder/pkg.sh:ro" \
-            arch-builder \
-            bash pkg.sh
-          cp -a workspace/. $GITHUB_WORKSPACE/out/dist/
+          docker build -f Dockerfile --output type=local,dest=$GITHUB_WORKSPACE/out/dist .
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
