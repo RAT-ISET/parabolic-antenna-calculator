@@ -7,5 +7,5 @@ pkgdesc="@PROJECT_DESCRIPTION@"
 license=('MIT')
 
 package() {
-    cp -r /opt/install/* "$pkgdir/"
+    cp -r "$startdir/install/*" "$pkgdir/"
 }
