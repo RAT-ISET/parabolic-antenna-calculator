@@ -62,7 +62,7 @@ jobs:
         working-directory: .github/pkg/arch
         run: |
           docker build -f Dockerfile -t arch-builder .
-          docker run --rm \
+          docker run --rm -i \
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
             -v "$GITHUB_WORKSPACE/install:/opt/work/install:ro" \
             -v "$GITHUB_WORKSPACE/dist:/opt/dist" \
