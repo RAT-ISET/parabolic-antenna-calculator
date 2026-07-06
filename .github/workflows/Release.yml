@@ -33,9 +33,6 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Create dist
-        run: mkdir dist
-
       - name: Prepare Tools ( Linux )
         if: runner.os == 'Linux'
         run: |
@@ -64,8 +61,8 @@ jobs:
           docker build -f Dockerfile -t arch-builder .
           docker run --rm -i \
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
-            -v "$GITHUB_WORKSPACE/install:/opt/work/install:ro" \
-            -v "$GITHUB_WORKSPACE/dist:/opt/dist" \
+            -v "$GITHUB_WORKSPACE/out/install:/opt/work/install:ro" \
+            -v "$GITHUB_WORKSPACE/out/dist:/opt/dist" \
             -v "./pkg.sh:/home/builder/pkg.sh:ro" \
             arch-builder \
             bash pkg.sh
@@ -76,7 +73,7 @@ jobs:
 
       - name: Prepare to Sign ( Windows )
         if: runner.os == 'Windows'
-        working-directory: dist
+        working-directory: out/dist
         shell: pwsh
         run: |
           Set-Content -Path codesign.key -Value "${{ secrets.CODE_SIGN_KEY }}"
@@ -90,14 +87,14 @@ jobs:
 
       - name: Sign Software ( Linux )
         if: runner.os == 'Linux'
-        working-directory: dist
+        working-directory: out/dist
         run: |
           KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | awk '/sec/{print $2}' | cut -d'/' -f2)
           rpm --addsign --define "_gpg_name $KEY_ID" *.rpm
 
       - name: Sign Software ( Windows )
         if: runner.os == 'Windows'
-        working-directory: dist
+        working-directory: out/dist
         shell: pwsh
         run: |
           signtool sign /f codesign.pfx `
@@ -113,14 +110,14 @@ jobs:
           Remove-Item codesign*
 
       - name: Info Output
-        run: find dist -type f
+        run: find out/dist -type f
         shell: bash
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
           name: dist-${{ runner.os }}
-          path: dist/*
+          path: out/dist/*
           compression-level: '0'
 
   upload:
