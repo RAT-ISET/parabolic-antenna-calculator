@@ -8,7 +8,7 @@ set(PROJECT_VERSION 0.1.0)
 set(PROJECT_RELEASE 1)
 set(PROJECT_DESCRIPTION "A parabolic antenna calculator")
 
-file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/out/dist")
+file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/out/dist")
 include(cmake/Deps.cmake)
 include(cmake/Release.cmake)
 include(cmake/ArchPkg.cmake)
