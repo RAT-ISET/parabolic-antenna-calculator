@@ -64,7 +64,7 @@ jobs:
           docker run --rm -i \
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
             -v "$GITHUB_WORKSPACE/out/install:/opt/work/install:ro" \
-            -v "./workspace:/opt/dist" \
+            -v "./workspace:/workspace" \
             -v "./pkg.sh:/home/builder/pkg.sh:ro" \
             arch-builder \
             bash pkg.sh

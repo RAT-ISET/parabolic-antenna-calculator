@@ -8,4 +8,4 @@ find /home/builder -print
 
 cat ./PKGBUILD
 makepkg -f
-cp ./*.pkg.tar.zst /opt/dist/
+cp ./*.pkg.tar.zst /workspace/
