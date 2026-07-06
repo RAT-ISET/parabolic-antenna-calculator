@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/out/install)
+
 project(ParabolicAntennaCalculator C CXX)
 
 set(CMAKE_CXX_STANDARD 23)

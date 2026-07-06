@@ -3,8 +3,6 @@ add_executable(ParabolicAntennaCalculator Main.cpp)
 target_include_directories(ParabolicAntennaCalculator PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(ParabolicAntennaCalculator PRIVATE ParabolicAntennaCalculatorDeps ParabolicAntennaCalculatorCore ParabolicAntennaCalculatorArg)
 
-set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/out/install)
-
 include(GNUInstallDirs)
 
 install(TARGETS ParabolicAntennaCalculator RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
