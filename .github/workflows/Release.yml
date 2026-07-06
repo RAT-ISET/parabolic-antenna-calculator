@@ -63,10 +63,11 @@ jobs:
         run: |
           docker build -f Dockerfile -t arch-builder .
           docker run --rm \
-            -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/build/PKGBUILD:ro" \
-            -v "$GITHUB_WORKSPACE/install:/opt/build/install:ro" \
+            -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
+            -v "$GITHUB_WORKSPACE/install:/opt/work/install:ro" \
             -v "$GITHUB_WORKSPACE/dist:/opt/dist" \
-            arch-builder bash pkg.sh
+            arch-builder \
+            bash pkg.sh
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
@@ -80,10 +81,10 @@ jobs:
           Set-Content -Path codesign.key -Value "${{ secrets.CODE_SIGN_KEY }}"
           Set-Content -Path codesign.crt -Value "${{ secrets.CODE_SIGN_CRT }}"
           Set-Content -Path intermediate.crt -Value "${{ secrets.INTERMEDIATE_CRT }}"
-          openssl pkcs12 -export -inkey codesign.key \
-            -in codesign.crt \
-            -certfile intermediate.crt \
-            -out codesign.pfx \
+          openssl pkcs12 -export -inkey codesign.key `
+            -in codesign.crt `
+            -certfile intermediate.crt `
+            -out codesign.pfx `
             -passout pass:${{ secrets.PASS }}
 
       - name: Sign Software ( Linux )
@@ -98,8 +99,16 @@ jobs:
         working-directory: dist
         shell: pwsh
         run: |
-          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 *.msi
-          signtool sign /f codesign.pfx /p ${{ secrets.PASS }} /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 *.exe
+          signtool sign /f codesign.pfx `
+            /p ${{ secrets.PASS }} `
+            /fd SHA256 `
+            /tr http://timestamp.digicert.com `
+            /td SHA256 *.msi
+          signtool sign /f codesign.pfx `
+            /p ${{ secrets.PASS }} `
+            /fd SHA256 `
+            /tr http://timestamp.digicert.com `
+            /td SHA256 *.exe
           Remove-Item codesign*
 
       - name: Info Output
