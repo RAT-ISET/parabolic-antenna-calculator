@@ -58,6 +58,8 @@ jobs:
         if: runner.os == 'Linux'
         working-directory: .github/pkg/arch
         run: |
+          echo "$GITHUB_WORKSPACE"
+          find $GITHUB_WORKSPACE/out -print
           docker build -f Dockerfile -t arch-builder .
           docker run --rm -i \
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
