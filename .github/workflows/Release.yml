@@ -64,10 +64,11 @@ jobs:
           docker run --rm -i \
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
             -v "$GITHUB_WORKSPACE/out/install:/opt/work/install:ro" \
-            -v "$GITHUB_WORKSPACE/out/dist:/opt/dist" \
+            -v "./workspace:/opt/dist" \
             -v "./pkg.sh:/home/builder/pkg.sh:ro" \
             arch-builder \
             bash pkg.sh
+          cp -a workspace/. $GITHUB_WORKSPACE/out/dist/
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
