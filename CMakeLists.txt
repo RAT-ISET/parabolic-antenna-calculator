@@ -10,5 +10,6 @@ set(PROJECT_DESCRIPTION "A parabolic antenna calculator")
 
 include(cmake/Deps.cmake)
 include(cmake/Release.cmake)
+include(cmake/ArchPkg.cmake)
 
 add_subdirectory(src)
