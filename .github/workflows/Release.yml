@@ -66,6 +66,7 @@ jobs:
             -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/work/PKGBUILD:ro" \
             -v "$GITHUB_WORKSPACE/install:/opt/work/install:ro" \
             -v "$GITHUB_WORKSPACE/dist:/opt/dist" \
+            -v "./pkg.sh:/home/builder/pkg.sh:ro" \
             arch-builder \
             bash pkg.sh
 
