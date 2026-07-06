@@ -31,7 +31,7 @@ jobs:
           -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }}
 
       - name: Build
-        run: cmake --build build --config Release
+        run: cmake --build build --config Release --target install
 
       - name: Prepare Tools ( Linux )
         if: runner.os == 'Linux'
