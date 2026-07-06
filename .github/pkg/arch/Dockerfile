@@ -8,9 +8,7 @@ RUN pacman -Syu --noconfirm && pacman -S --noconfirm base-devel && useradd -m bu
 USER builder
 WORKDIR /home/builder
 
-COPY --chown=builder:builder $GITHUB_WORKSPACE/build/PKGBUILD ./
-COPY --chown=builder:builder $GITHUB_WORKSPACE/out/install/ ./install/
-COPY --chown=builder:builder pkg.sh ./
+COPY --chown=builder:builder tmp/ ./
 
 RUN bash pkg.sh
 
