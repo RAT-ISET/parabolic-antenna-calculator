@@ -49,13 +49,24 @@ jobs:
           dotnet tool install --global wix --version 4.0.4
           wix extension add --global WixToolset.UI.wixext/4.0.4
 
-      - name: Install and Configure the Windows SDK
+      - name: Install Windows SDK ( Windows )
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Package
         working-directory: build
         run: cpack -C Release
+
+      - name: Package for Arch ( Linux )
+        if: runner.os == 'Linux'
+        working-directory: .github/pkg/arch
+        run: |
+          docker build -f Dockerfile -t arch-builder .
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/build/PKGBUILD:/opt/build/PKGBUILD:ro" \
+            -v "$GITHUB_WORKSPACE/install:/opt/build/install:ro" \
+            -v "$GITHUB_WORKSPACE/dist:/opt/dist" \
+            arch-builder bash pkg.sh
 
       - name: Prepare to Sign ( Linux )
         if: runner.os == 'Linux'
@@ -69,7 +80,11 @@ jobs:
           Set-Content -Path codesign.key -Value "${{ secrets.CODE_SIGN_KEY }}"
           Set-Content -Path codesign.crt -Value "${{ secrets.CODE_SIGN_CRT }}"
           Set-Content -Path intermediate.crt -Value "${{ secrets.INTERMEDIATE_CRT }}"
-          openssl pkcs12 -export -inkey codesign.key -in codesign.crt -certfile intermediate.crt -out codesign.pfx -passout pass:${{ secrets.PASS }}
+          openssl pkcs12 -export -inkey codesign.key \
+            -in codesign.crt \
+            -certfile intermediate.crt \
+            -out codesign.pfx \
+            -passout pass:${{ secrets.PASS }}
 
       - name: Sign Software ( Linux )
         if: runner.os == 'Linux'
