@@ -41,7 +41,7 @@ jobs:
         run: cpack -C Release
 
       - name: EXPack
-        uses: RAT-ISET/release-action/pack/expack/linux@main
+        uses: RAT-ISET/release-action/pack/expack@main
         with:
           code_sign_key: ${{ secrets.CODE_SIGN_KEY }}
           code_sign_crt: ${{ secrets.CODE_SIGN_CRT }}
