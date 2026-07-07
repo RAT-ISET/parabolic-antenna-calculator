@@ -6,16 +6,17 @@
 // Path /src/io/IoError.cpp
 // Io error.
 
+#include <pac/io/IoError.hpp>
 #include <pac/io/PacProject.hpp>
 
 void analyzeFileError(fstream& file)
 {
     stringstream ss;
-    ss << "[io/IoError.cpp/analyzeFileError]";
-    ss << " is_open: " << file.is_open();
-    ss << " good: " << file.good();
-    ss << " fail: " << file.fail();
-    ss << " bad: " << file.bad();
-    ss << " eof: " << file.eof();
+    ss << "[io/IoError.cpp/analyzeFileError]" << endl;
+    ss << "is_open: " << file.is_open() << endl;
+    ss << "good: " << file.good() << endl;
+    ss << "fail: " << file.fail() << endl;
+    ss << "bad: " << file.bad() << endl;
+    ss << "eof: " << file.eof() << endl;
     logger.debug(ss.view());
 };

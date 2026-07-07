@@ -13,21 +13,31 @@ using namespace std;
 
 enum class AntennaEntryErrorEnum
 {
-    MissingParameter = -1,
-    InvalidParameter = -2,
-    ConflictParameter = -3,
-    MathematicalError = -4,
-    ErrorInputParameter = -5,
-    UnknownParameter = -101,
-    UnknownError = -102,
+    MissingParameter = 0,
+    InvalidParameter = 1,
+    ConflictParameter = 2,
+    MathematicalError = 3,
+    ErrorInputParameter = 4,
+    UnknownParameter = 5,
+    UnknownError = 6,
+};
+
+constexpr array<string_view, 7> ANTENNA_ENTRY_ERROR_MESSAGES = {
+    "MissingParameter",
+    "InvalidParameter",
+    "MathematicalError",
+    "ErrorInputParameter",
+    "UnknownParameter",
+    "UnknownError",
 };
 
 struct AntennaEntryError
 {
-    AntennaEntryErrorEnum type_;
+    AntennaEntryErrorEnum type_{};
     LogEntry log_;
     AntennaEntryError() = default;
     constexpr AntennaEntryError(AntennaEntryErrorEnum type, const LogEntry& log)
         : type_(type)
         , log_(log) {}
+    string_view getMessage() const;
 };

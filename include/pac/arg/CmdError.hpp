@@ -13,7 +13,7 @@
 
 using namespace std;
 
-constexpr array<string_view, 4> error_messages {
+constexpr array<string_view, 4> CMD_ERROR_MESSAGES {
     "The input argument was invalid",
     "The subcommand not found",
     "The parameter name not found",

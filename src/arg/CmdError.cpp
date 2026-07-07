@@ -10,6 +10,6 @@
 
 string CmdError::getMessage() const
 {
-    const string_view message = error_messages[static_cast<int>(type_)];
+    const string_view message = CMD_ERROR_MESSAGES[static_cast<int>(type_)];
     return string(message) + "\n" + "Input: " + input_;
 }

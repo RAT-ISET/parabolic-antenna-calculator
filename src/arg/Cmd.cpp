@@ -129,9 +129,8 @@ int command(const int argc, char* argv[])
         }
         if (error.has_value())
         {
-            int code = static_cast<int>(error.value().type_);
-            logger.error(format("[arg/Cmd.cpp:command] Calculate error code {}", code));
-            shutdown(std::move(project), code);
+            logger.error(format("[arg/Cmd.cpp:command] Calculate error message: {}", error.value().getMessage()));
+            shutdown(std::move(project), -1);
         } else
         {
             project.getDataFile().save();
