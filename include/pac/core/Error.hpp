@@ -8,6 +8,8 @@
 
 #pragma once
 #include <pac/core/Logger.hpp>
+#include <string_view>
+#include <array>
 
 using namespace std;
 
@@ -39,5 +41,5 @@ struct AntennaEntryError
     constexpr AntennaEntryError(AntennaEntryErrorEnum type, const LogEntry& log)
         : type_(type)
         , log_(log) {}
-    string_view getMessage() const;
+    [[nodiscard]] string_view getMessage() const;
 };
