@@ -6,6 +6,8 @@ target_link_libraries(ParabolicAntennaCalculator PRIVATE ParabolicAntennaCalcula
 include(GNUInstallDirs)
 
 install(TARGETS ParabolicAntennaCalculator RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES ${CMAKE_SOURCE_DIR}/README.md DESTINATION share/doc/${PROJECT_NAME})
+install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION share/licenses/${PROJECT_NAME})
 
 add_subdirectory(core)
 add_subdirectory(io)

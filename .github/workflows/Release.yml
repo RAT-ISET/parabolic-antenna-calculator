@@ -62,6 +62,8 @@ jobs:
           find $GITHUB_WORKSPACE/out -print
           mkdir tmp
           cp pkg.sh ./tmp/
+          cp $GITHUB_WORKSPACE/README.md ./tmp/
+          cp $GITHUB_WORKSPACE/LICENSE ./tmp/
           cp $GITHUB_WORKSPACE/build/PKGBUILD ./tmp/
           cp -a $GITHUB_WORKSPACE/out/install/ ./tmp/install/
           docker build -f Dockerfile --output type=local,dest=$GITHUB_WORKSPACE/out/dist .
