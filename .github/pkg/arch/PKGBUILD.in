@@ -8,6 +8,4 @@ license=('MIT')
 
 package() {
     cp -a "$startdir/install/." "$pkgdir/"
-    install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
-    install -Dm655 LICENSE "$pkgdir/usr/licenses/$pkgname/LICENSE"
 }
