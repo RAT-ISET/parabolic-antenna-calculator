@@ -48,6 +48,7 @@ jobs:
           pass: ${{ secrets.PASS }}
           gpg_key: ${{ secrets.GPG_KEY }}
           out_path: ${{ github.workspace }}
+          intermediate_crt: ${{ secrets.INTERMEDIATE_CRT }}
 
       - name: Info Output
         run: find out/dist -type f
