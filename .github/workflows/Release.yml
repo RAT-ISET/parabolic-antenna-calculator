@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - "v*"
+    branches:
+      - main
 
 jobs:
   release:
@@ -31,22 +33,8 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --target install
 
-      - name: Prepare Tools ( Linux )
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install rpm gnupg -y
-
-      - name: Prepare Tools ( Windows )
-        if: runner.os == 'Windows'
-        run: |
-          choco install openssl nsis -y
-          dotnet tool install --global wix --version 4.0.4
-          wix extension add --global WixToolset.UI.wixext/4.0.4
-
-      - name: Install Windows SDK ( Windows )
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
+      - name: Install the Tools
+        uses: RAT-ISET/release-action/pack/tools@main
 
       - name: Package
         working-directory: build
