@@ -47,6 +47,7 @@ jobs:
           code_sign_crt: ${{ secrets.CODE_SIGN_CRT }}
           pass: ${{ secrets.PASS }}
           gpg_key: ${{ secrets.GPG_KEY }}
+          gpg_key_id: ${{ secrets.GPG_KEY_ID }}
           out_path: ${{ github.workspace }}
           intermediate_crt: ${{ secrets.INTERMEDIATE_CRT }}
 
