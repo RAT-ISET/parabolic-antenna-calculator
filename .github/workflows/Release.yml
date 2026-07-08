@@ -3,8 +3,6 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - main
 
 jobs:
   release:
@@ -67,11 +65,77 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v8
         with:
-          path: dist
+          path: artifacts
+
+      - name: Flattening
+        run: |
+          mkdir dist
+          find artifacts -type f -exec mv -t dist {} +
+
+      - name: Detect Pre-Release
+        id: detect
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ "$TAG" =~ -(alpha|beta|rc)(\.|$) ]]; then
+            PRERELEASE=true
+          else
+            PRERELEASE=false
+          fi
+          echo "PRERELEASE=$PRERELEASE" >> "$GITHUB_ENV"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
-        run: echo "TODO"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          args=()
+          if [[ "$PRERELEASE" == "true" ]]; then
+            args+=(--prerelease)
+          fi
+          gh release create "$GITHUB_REF_NAME" \
+            --generate-notes \
+            "${args[@]}" \
+            dist/*
+
+      - name: Generate GitHub App Token
+        if: steps.detect.outputs.prerelease == 'false'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.ECLIPTIC_ID }}
+          private-key: ${{ secrets.ECLIPTIC_KEY }}
+          owner: RAT-ISET
+          repositories: repos
+
+      - name: Create Repos Directories
+        if: steps.detect.outputs.prerelease == 'false'
+        run: mkdir -p workspace
+
+      - name: Prepare to Push at Repos
+        if: steps.detect.outputs.prerelease == 'false'
+        working-directory: workspace
+        run: |
+          BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)
+          git clone https://x-access-token:${{ steps.app-token.outputs.token }}
+          git switch -c "$BRANCH"
+          mkdir -p incoming/{\
+            rpm/x86_64/${{ github.event.repository.name }},\
+            arch/x86_64/${{ github.event.repository.name }},\
+            deb/x86_64/pool/main/${{ github.event.repository.name }}}
+
+      - name: Push to Repos
+        if: steps.detect.outputs.prerelease == 'false'
+        working-directory: workspace/incoming
+        run: |
+          cp -a ${{ github.workspace }}/dist/*.rpm ./rpm/x86_64/${{ github.event.repository.name }}/
+          cp -a ${{ github.workspace }}/dist/*.pkg.tar.zst ./arch/x86_64/${{ github.event.repository.name }}/
+          cp -a ${{ github.workspace }}/dist/*.deb ./deb/x86_64/pool/main/${{ github.event.repository.name }}/
+          echo "${{ github.event.repository.name }}" >> software_name
+          echo "/software/${{ github.event.repository.name }}/* https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/:splat 302"
