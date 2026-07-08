@@ -62,7 +62,6 @@ jobs:
           compression-level: '0'
 
   upload:
-    if: false
     needs: release
     runs-on: ubuntu-latest
 
