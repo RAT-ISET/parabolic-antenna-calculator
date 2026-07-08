@@ -111,7 +111,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.ECLIPTIC_ID }}
+          client-id: ${{ secrets.ECLIPTIC_ID }}
           private-key: ${{ secrets.ECLIPTIC_KEY }}
           owner: RAT-ISET
           repositories: repos
@@ -125,6 +125,8 @@ jobs:
         working-directory: workspace
         run: |
           BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          apt install -y tree
           git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git
           cd ${{ github.event.repository.name }}
           git switch -c "$BRANCH"
@@ -134,8 +136,12 @@ jobs:
         if: steps.detect.outputs.prerelease == 'false'
         working-directory: workspace/${{ github.event.repository.name }}/incoming
         run: |
+          tree
           cp -a ${{ github.workspace }}/dist/*.rpm ./rpm/x86_64/${{ github.event.repository.name }}/
           cp -a ${{ github.workspace }}/dist/*.pkg.tar.zst ./arch/x86_64/${{ github.event.repository.name }}/
           cp -a ${{ github.workspace }}/dist/*.deb ./deb/x86_64/pool/main/${{ github.event.repository.name }}/
           echo "${{ github.event.repository.name }}" >> software_name
           echo "/software/${{ github.event.repository.name }}/* https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/:splat 302"
+          git add .
+          git commit -m "upload(${{ github.event.repository.name }}): ${{ github.ref_name }}"
+          git push origin $BRANCH
