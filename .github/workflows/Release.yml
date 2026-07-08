@@ -123,7 +123,7 @@ jobs:
         if: steps.detect.outputs.prerelease == 'false'
         working-directory: workspace
         run: |
-          BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)
+          BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
           git clone https://x-access-token:${{ steps.app-token.outputs.token }}
           git switch -c "$BRANCH"
           mkdir -p incoming/{\
