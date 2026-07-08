@@ -127,8 +127,8 @@ jobs:
           BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
           echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           apt install -y tree
-          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git
-          cd ${{ github.event.repository.name }}
+          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository_owner }}/repos.git
+          cd repos
           git switch -c "$BRANCH"
           mkdir -p incoming/{rpm/x86_64/${{ github.event.repository.name }},arch/x86_64/${{ github.event.repository.name }},deb/x86_64/pool/main/${{ github.event.repository.name }}}
 
@@ -142,6 +142,8 @@ jobs:
           cp -a ${{ github.workspace }}/dist/*.deb ./deb/x86_64/pool/main/${{ github.event.repository.name }}/
           echo "${{ github.event.repository.name }}" >> software_name
           echo "/software/${{ github.event.repository.name }}/* https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/:splat 302"
+          git config --global user.name "Ecliptic ISET ( Bot )"
+          git config --global user.email "ecliptic@ratiset.org"
           git add .
           git commit -m "upload(${{ github.event.repository.name }}): ${{ github.ref_name }}"
           git push origin $BRANCH
