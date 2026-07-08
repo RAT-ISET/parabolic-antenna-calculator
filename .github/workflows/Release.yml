@@ -102,6 +102,7 @@ jobs:
           fi
           gh release create "$GITHUB_REF_NAME" \
             --generate-notes \
+            --draft \
             "${args[@]}" \
             dist/*
 
@@ -125,12 +126,13 @@ jobs:
         run: |
           BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
           git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git
+          cd ${{ github.event.repository.name }}
           git switch -c "$BRANCH"
           mkdir -p incoming/{rpm/x86_64/${{ github.event.repository.name }},arch/x86_64/${{ github.event.repository.name }},deb/x86_64/pool/main/${{ github.event.repository.name }}}
 
       - name: Push to Repos
         if: steps.detect.outputs.prerelease == 'false'
-        working-directory: workspace/incoming
+        working-directory: workspace/${{ github.event.repository.name }}/incoming
         run: |
           cp -a ${{ github.workspace }}/dist/*.rpm ./rpm/x86_64/${{ github.event.repository.name }}/
           cp -a ${{ github.workspace }}/dist/*.pkg.tar.zst ./arch/x86_64/${{ github.event.repository.name }}/
