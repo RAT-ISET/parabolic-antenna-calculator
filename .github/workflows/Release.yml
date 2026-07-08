@@ -124,17 +124,17 @@ jobs:
         if: steps.detect.outputs.prerelease == 'false'
         working-directory: workspace
         run: |
-          BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
-          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           sudo apt install -y tree
           git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository_owner }}/repos.git
           cd repos
+          BRANCH="upload/$(git rev-parse --short HEAD)-$(date +%s)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
           git switch -c "$BRANCH"
           mkdir -p incoming/{rpm/x86_64/${{ github.event.repository.name }},arch/x86_64/${{ github.event.repository.name }},deb/x86_64/pool/main/${{ github.event.repository.name }}}
 
       - name: Push to Repos
         if: steps.detect.outputs.prerelease == 'false'
-        working-directory: workspace/${{ github.event.repository.name }}/incoming
+        working-directory: workspace/repos/incoming
         run: |
           tree
           cp -a ${{ github.workspace }}/dist/*.rpm ./rpm/x86_64/${{ github.event.repository.name }}/
