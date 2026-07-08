@@ -141,7 +141,7 @@ jobs:
           cp -a ${{ github.workspace }}/dist/*.pkg.tar.zst ./arch/x86_64/${{ github.event.repository.name }}/
           cp -a ${{ github.workspace }}/dist/*.deb ./deb/x86_64/pool/main/${{ github.event.repository.name }}/
           echo "${{ github.event.repository.name }}" >> software_name
-          echo "/software/${{ github.event.repository.name }}/* https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/:splat 302"
+          echo "/software/${{ github.event.repository.name }}/* https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/:splat 302" >> redirect_line.txt
           git config --global user.name "Ecliptic ISET ( Bot )"
           git config --global user.email "ecliptic@ratiset.org"
           git add .
