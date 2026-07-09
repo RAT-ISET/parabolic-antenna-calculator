@@ -8,6 +8,7 @@
 
 #include <pac/io/DataFile.hpp>
 #include <pac/io/IoError.hpp>
+#include <pac/math/Prefix.hpp>
 
 void DataFile::initDataFile(ofstream& file)
 {
@@ -80,7 +81,7 @@ ParameterList& DataFile::getParameterList()
 void DataFile::info(ostringstream& builder, const size_t index) const
 {
     builder << PARAMETER_MAP[index] << ": ";
-    if (parameters_[index].has_value()) builder << format("{:.3f} ", parameters_[index].value()) << PARAMETER_UNIT[index];
+    if (parameters_[index].has_value()) builder << prefixFormat(parameters_[index].value()) << PARAMETER_UNIT[index];
     else builder << "Empty";
 }
 
