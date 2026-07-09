@@ -31,3 +31,14 @@ constexpr array PARAMETER_MAP{
     "height",
     "f/D",
 };
+
+constexpr array PARAMETER_UNIT{
+    "Hz",
+    "m",
+    "dB",
+    "m",
+    "",
+    "m",
+    "m",
+    "Hz/m",
+};
