@@ -25,9 +25,10 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Configure CMake
-        run: cmake -S . -B build \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }} \
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }}
           -DPROJECT_FULL_VERSION="${{ github.ref_name }}"
 
       - name: Build
