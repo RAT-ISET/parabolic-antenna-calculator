@@ -4,9 +4,15 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/out/install)
 
+set(PROJECT_VERSION 0.1.0)
+if (${PROJECT_FULL_VERSION})
+    string(REGEX MATCH "^[0-9]+(\\.[0-9]+){0,3}" ${PROJECT_VERSION} ${PROJECT_FULL_VERSION})
+else ()
+    set(PROJECT_FULL_VERSION ${PROJECT_VERSION})
+endif ()
+
 project(ParabolicAntennaCalculator C CXX)
 
-set(PROJECT_VERSION 0.1.0)
 set(PROJECT_RELEASE 1)
 set(PROJECT_DESCRIPTION "A parabolic antenna calculator")
 

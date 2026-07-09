@@ -26,8 +26,9 @@ jobs:
 
       - name: Configure CMake
         run: cmake -S . -B build \
-          -DCMAKE_BUILD_TYPE=Release
-          -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }}
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCPACK_WIX_UPGRADE_GUID=${{ vars.PACKAGE_GUID }} \V
+          -DPROJECT_FULL_VERSION=$GITHUB_REF_NAME
 
       - name: Build
         run: cmake --build build --config Release --target install
