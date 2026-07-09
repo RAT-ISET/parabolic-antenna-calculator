@@ -102,7 +102,6 @@ jobs:
           fi
           gh release create "$GITHUB_REF_NAME" \
             --generate-notes \
-            --draft \
             "${args[@]}" \
             dist/*
 
