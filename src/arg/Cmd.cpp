@@ -8,7 +8,6 @@
 
 #include <iostream>
 
-#include <CLI/CLI.hpp>
 #include <pac/arg/Cmd.hpp>
 #include <pac/io/PacProject.hpp>
 #include <pac/arg/CmdError.hpp>
@@ -43,6 +42,8 @@ int command(const int argc, char* argv[])
     auto* para_set = para->add_subcommand("set", "set the parameter");
     para_set->add_option("name", name, "Parameter name")->required();
     para_set->add_option("value", value, "Parameter value")->required();
+    auto* para_value = para->add_subcommand("value", "set the multiple parameter value");
+    array<string, 7> origin_paras = addParaOptions(para_value);
     auto* para_delete = para->add_subcommand("delete", "Delete the parameter");
     para_delete->add_option("name", name, "Parameter name")->required();
     auto* para_show = para->add_subcommand("show", "Show the parameter list");
@@ -99,7 +100,20 @@ int command(const int argc, char* argv[])
             {
                 logger.error(unmatch_value.error().getMessage() + value);
             }
-        } else if (*para_delete)
+        } else if (*para_value)
+        {
+            logger.debug("[arg/Cmd.cpp:command] Input the value command");
+            auto unmatch_paras = matchValues(origin_paras);
+            if (!unmatch_paras.has_value())
+            {
+                logger.error(unmatch_paras.error().getMessage());
+                return shutdown(std::move(project));
+            }
+            array<double, 7> paras = unmatch_paras.value();
+            for (size_t i = 0; i < 7; i++)
+                data_file.setParameter(i, paras[i]);
+        }
+        else if (*para_delete)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the delete command");
             data_file.deleteParameter(matched_name);
@@ -155,6 +169,18 @@ int shutdown(Project project, const int code)
     return code;
 }
 
+array<string, 7> addParaOptions(CLI::App* app)
+{
+    array<string, 7> para{};
+    for (size_t i = 0; i < 7; i++)
+    {
+        string crossbar = "--";
+        crossbar += PARAMETER_MAP[i];
+        app->add_option(crossbar , para[i], PARAMETER_MAP[i]);
+    }
+    return para;
+}
+
 expected<size_t, CmdError> matchName(const string& name)
 {
     if (const auto parameter = ranges::find(PARAMETER_MAP, name); parameter == PARAMETER_MAP.end())
@@ -180,4 +206,16 @@ expected<double, CmdError> matchValue(const string& value)
     {
         return unexpected(CmdError(CmdErrorEnum::OutOfRange, value));
     }
+}
+
+expected<array<double, 7>, CmdError> matchValues(const array<string, 7>& values)
+{
+    array<double, 7> para{};
+    for (int i = 0; i < 7; i++)
+    {
+        auto unmatched_value = matchValue(values[i]);
+        if (!unmatched_value.has_value()) return unexpected(unmatched_value.error());
+        para[i] = unmatched_value.value();
+    }
+    return para;
 }
