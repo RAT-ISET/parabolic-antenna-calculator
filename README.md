@@ -8,10 +8,10 @@
 4. Quick Start
    - Environmental Requirements
    - Download and Installation
- 5. Instructions for Use
- 6. Project Structure
- 8. License
- 9. Contact Information
+5. Instructions for Use
+6. Project Structure
+7. License
+8. Contact Information
  
 ##  Project Introduction
 Parabolic-Antenna-Calculators is a professional auxiliary tool aimed at antenna designers, used for rapidly calculating the core performance parameters of parabolic reflector antennas. 
@@ -46,29 +46,29 @@ ParabolicAntennaCalculator [OPTIONS] <project_path> [SUBCOMMANDS]
 
 #### Global Options
 
-| Option | Description |
-|--------|-------------|
-| `-h, --help` | Print this help message and exit |
+| Option          | Description                                  |
+|-----------------|----------------------------------------------|
+| `-h, --help`    | Print this help message and exit             |
 | `-v, --version` | Display program version information and exit |
-| `--debug` | Enable debug mode |
+| `--debug`       | Enable debug mode                            |
 
 #### Subcommands
 
-| Subcommand | Description |
-|------------|-------------|
-| `init` | Initialize the project |
-| `para` | Manage parameters |
-| `run` | Start the calculator |
+| Subcommand | Description            |
+|------------|------------------------|
+| `init`     | Initialize the project |
+| `para`     | Manage parameters      |
+| `run`      | Start the calculator   |
 
 #### Parameter Management (para)
 
 `para` includes the following subcommands:
 
-| Subcommand | Description |
-|------------|-------------|
-| `set` | Set a parameter |
-| `delete` | Delete a parameter |
-| `show` | Show parameter list |
+| Subcommand | Description         |
+|------------|---------------------|
+| `set`      | Set a parameter     |
+| `delete`   | Delete a parameter  |
+| `show`     | Show parameter list |
 
 **Available parameters:** `frequency` / `wavelength` / `efficiency` / `diameter` / `increase` / `focalLength` / `height` / `f/D`
 
@@ -121,91 +121,54 @@ ParabolicAntennaCalculator myproject para show
 ```
 
 ## Project Structure
- ```bash
-./
-│  .editorconfig
-│  .gitignore
-│  CMakeLists.txt
+```text
+.
 │  LICENSE
-│  LICENSE.rtf
-│  LICENSE.txt
 │  README.md
-│  
-├─.github
-│  ├─pkg
-│  │  └─arch
-│  │          PKGBUILD.in
-│  │          
-│  └─workflows
-│          Build.yml
-│          Release.yml
+├─.github/...
 │          
 ├─cmake
 │      ArchPkg.cmake
 │      Deps.cmake
 │      Release.cmake
 │      
-├─docs
-│      FILE.md
-│      
-├─include
-│  └─pac
-│      ├─arg
-│      │      Cmd.hpp
-│      │      CmdError.hpp
-│      │      
-│      ├─core
-│      │      Definition.hpp
-│      │      Entry.hpp
-│      │      Error.hpp
-│      │      Logger.hpp
-│      │      Message.hpp
-│      │      
-│      ├─io
-│      │      DataFile.hpp
-│      │      IoError.hpp
-│      │      LogFile.hpp
-│      │      PacProject.hpp
-│      │      
-│      └─math
-│              Calculate.hpp
-│              Constants.hpp
-│              Function.hpp
+├─src
+│   │  CMakeLists.txt
+│   │  Main.cpp
+│   │  
+│   ├─arg
+│   │      Cmd.cpp
+│   │      CmdError.cpp
+│   │      
+│   ├─core
+│   │      Entry.cpp
+│   │      Error.cpp
+│   │      Logger.cpp
+│   │      
+│   ├─io
+│   │      DataFile.cpp
+│   │      IoError.cpp
+│   │      LogFile.cpp
+│   │      PacProject.cpp
+│   │      
+│   └─math
+│           Calculate.cpp
 │              
-└─src
-    │  CMakeLists.txt
-    │  Main.cpp
-    │  
-    ├─arg
-    │      CMakeLists.txt
-    │      Cmd.cpp
-    │      CmdError.cpp
-    │      
-    ├─core
-    │      CMakeLists.txt
-    │      Entry.cpp
-    │      Error.cpp
-    │      Logger.cpp
-    │      
-    ├─io
-    │      CMakeLists.txt
-    │      DataFile.cpp
-    │      IoError.cpp
-    │      LogFile.cpp
-    │      PacProject.cpp
-    │      
-    └─math
-            Calculate.cpp
-            CMakeLists.txt
-   ```
+├─docs/...
+└─include/...
 
-## License
-This project is licensed under the ***MIT License***.
+```
+
+---
 
 ## Contact Information
-- Author: ***Team ISET***
-- Email: ratiset@outlook.com
-- Website: https://ratiset.org
-- Repository: https://github.com/RAT-ISET/parabolic-antenna-calculator
-- Issues: https://github.com/RAT-ISET/parabolic-antenna-calculator/issues
+- Author: **Team ISET**
+- Email: [ratiset@outlook.com](mailto:ratiset@outlook.com)
+- Website: [ISET](https://www.ratiset.org)
+- Repository: [Parabolic Antenna Calculator](https://github.com/RAT-ISET/parabolic-antenna-calculator)
+- Issues: [Parabolic Antenna Calculator Issues](https://github.com/RAT-ISET/parabolic-antenna-calculator/issues)
 
+---
+
+> **Copyright (c) 2026 Team ISET**  
+> **This project is licensed under [MIT](/LICENSE).**
