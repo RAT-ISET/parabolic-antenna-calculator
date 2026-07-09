@@ -38,12 +38,12 @@ int command(const int argc, char* argv[])
     auto* para = app.add_subcommand("para", "About the parameter.");
     para->footer(PARA_HELP_FOOTER.data());
     optional<string> name;
-    string value;
+    double value;
     auto* para_set = para->add_subcommand("set", "set the parameter");
     para_set->add_option("name", name, "Parameter name")->required();
     para_set->add_option("value", value, "Parameter value")->required();
     auto* para_value = para->add_subcommand("value", "set the multiple parameter value");
-    array<string, 7> origin_paras = addParaOptions(para_value);
+    array<optional<double>, 7> paras = addParaOptions(para_value);
     auto* para_delete = para->add_subcommand("delete", "Delete the parameter");
     para_delete->add_option("name", name, "Parameter name")->required();
     auto* para_show = para->add_subcommand("show", "Show the parameter list");
@@ -89,35 +89,24 @@ int command(const int argc, char* argv[])
         if (*para_set)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the set command");
-            if (auto unmatch_value = matchValue(value); unmatch_value.has_value())
-            {
-                auto unmatched_old_value = data_file.setParameter(matched_name, unmatch_value.value());
-                string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
-                logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + value);
-                data_file.save();
-                logger.debug("[arg/Cmd.cpp:command] Data file was saved");
-            } else
-            {
-                logger.error(unmatch_value.error().getMessage() + value);
-            }
+            auto unmatched_old_value = data_file.setParameter(matched_name, value);
+            string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
+            logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + to_string(value));
+            data_file.save();
+            logger.debug("[arg/Cmd.cpp:command] Data file was saved");
         } else if (*para_value)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the value command");
-            auto unmatch_paras = matchValues(origin_paras);
-            if (!unmatch_paras.has_value())
-            {
-                logger.error(unmatch_paras.error().getMessage());
-                return shutdown(std::move(project));
-            }
-            array<double, 7> paras = unmatch_paras.value();
             for (size_t i = 0; i < 7; i++)
-                data_file.setParameter(i, paras[i]);
+                if (paras[i].has_value())
+                    data_file.setParameter(i, paras[i].value());
+            data_file.save();
         }
         else if (*para_delete)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the delete command");
             data_file.deleteParameter(matched_name);
-            logger.info("[arg/Cmd.cpp:command] Delete parameter" + value);
+            logger.info("[arg/Cmd.cpp:command] Delete parameter" + to_string(value));
             data_file.save();
             logger.debug("[arg/Cmd.cpp:command] Data file was saved");
         } else if (*para_show)
@@ -132,28 +121,14 @@ int command(const int argc, char* argv[])
         Calculator calculator(project.getDataFile().getParameterList());
         logger.debug("[arg/Cmd.cpp:command] The calculator entry was created");
         optional<AntennaEntryError> error;
-        if (auto unmatched_value = matchValue(value); unmatched_value.has_value())
-        {
-            logger.debug(format("[arg/Cmd.cpp:command] Input step {}", unmatched_value.value()));
-            error = calculator.step(unmatched_value.has_value());
-        } else
-        {
-            logger.debug("[arg/Cmd.cpp:command] Not input step");
-            error = calculator.run();
-        }
+        logger.debug(format("[arg/Cmd.cpp:command] Input step {}", value));
+        error = calculator.step(value);
         if (error.has_value())
         {
             logger.error(format("[arg/Cmd.cpp:command] Calculate error message: {}", error.value().getMessage()));
             shutdown(std::move(project), -1);
-        } else
-        {
-            project.getDataFile().save();
-        }
-    } else
-    {
-        logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
-    }
-
+        } else project.getDataFile().save();
+    } else logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
     return shutdown(std::move(project));
 }
 
@@ -169,9 +144,9 @@ int shutdown(Project project, const int code)
     return code;
 }
 
-array<string, 7> addParaOptions(CLI::App* app)
+array<optional<double>, 7> addParaOptions(CLI::App* app)
 {
-    array<string, 7> para{};
+    array<optional<double>, 7> para;
     for (size_t i = 0; i < 7; i++)
     {
         string crossbar = "--";
@@ -191,31 +166,4 @@ expected<size_t, CmdError> matchName(const string& name)
         auto index = distance(PARAMETER_MAP.begin(), parameter);
         return index;
     }
-}
-
-expected<double, CmdError> matchValue(const string& value)
-{
-    try
-    {
-        double data = stod(value);
-        return data;
-    } catch (const invalid_argument&)
-    {
-        return unexpected(CmdError(CmdErrorEnum::InvalidArgument, value));
-    } catch (const out_of_range&)
-    {
-        return unexpected(CmdError(CmdErrorEnum::OutOfRange, value));
-    }
-}
-
-expected<array<double, 7>, CmdError> matchValues(const array<string, 7>& values)
-{
-    array<double, 7> para{};
-    for (int i = 0; i < 7; i++)
-    {
-        auto unmatched_value = matchValue(values[i]);
-        if (!unmatched_value.has_value()) return unexpected(unmatched_value.error());
-        para[i] = unmatched_value.value();
-    }
-    return para;
 }
