@@ -1,5 +1,5 @@
 pkgname=@PROJECT_NAME@
-pkgver=@PROJECT_FULL_VERSION@
+pkgver=@PROJECT_VERSION@
 pkgrel=@PROJECT_RELEASE@
 arch=('x86_64')
 

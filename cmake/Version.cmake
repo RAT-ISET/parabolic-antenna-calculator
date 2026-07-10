@@ -1,0 +1,31 @@
+function(get_short_version FULL_VERSION SHORT_VERSION)
+    message("GetVersion: Input ${FULL_VERSION}")
+    set(version "${FULL_VERSION}")
+    string(REGEX REPLACE "^v" "" version "${version}")
+    message("GetVersion: Remove-v ${version}")
+    if (version MATCHES "^(.*)-(alpha|beta|rc)\\.([0-9]+)$")
+        set(base "${CMAKE_MATCH_1}")
+        set(type "${CMAKE_MATCH_2}")
+        set(number "${CMAKE_MATCH_3}")
+    else ()
+        set(base "${version}")
+    endif ()
+
+    message("GetVersion: Get ${base} ${type} ${number}")
+
+    if (type STREQUAL "alpha")
+        math(EXPR tweak "1000 + ${number}")
+    elseif (type STREQUAL "beta")
+        math(EXPR tweak "2000 + ${number}")
+    elseif (type STREQUAL "rc")
+        math(EXPR tweak "3000 + ${number}")
+    endif ()
+
+    if (tweak)
+        message("GetVersion: SetTweak ${tweak}")
+        set(tweak ".${tweak}")
+    endif ()
+
+    set(${SHORT_VERSION} "${base}${tweak}" PARENT_SCOPE)
+
+endfunction()
