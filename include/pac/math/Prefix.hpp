@@ -13,12 +13,12 @@
 
 using namespace std;
 
-constexpr string_view MIN_UNIT = "munpfazyrq";
-constexpr string_view MAX_UNIT = "kMGTPEZYRQ";
+constexpr string_view MIN_UNIT = " munpfazyrq";
+constexpr string_view MAX_UNIT = " kMGTPEZYRQ";
 
 constexpr string prefixFormat(double number)
 {
-    size_t count = 1;
+    size_t count = 0;
     if (number >= 1000)
     {
         while (number >= 1000)
@@ -43,8 +43,8 @@ constexpr string prefixFormat(double number)
 constexpr optional<int> dePrefixFormat(const char& c)
 {
     size_t pos = MIN_UNIT.find(c);
-    if (pos != string::npos) return -(pos + 1);
+    if (pos != string::npos) return -pos;
     pos = MAX_UNIT.find(c);
-    if (pos != string::npos) return (pos + 1);
+    if (pos != string::npos) return pos;
     return nullopt;
 }
