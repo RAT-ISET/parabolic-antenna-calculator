@@ -14,6 +14,7 @@
 #include <pac/core/Logger.hpp>
 #include <pac/core/Message.hpp>
 #include <pac/math/Calculate.hpp>
+#include <pac/math/Prefix.hpp>
 
 using namespace std;
 
@@ -38,19 +39,19 @@ int command(const int argc, char* argv[])
     auto* para = app.add_subcommand("para", "About the parameter.");
     para->footer(PARA_HELP_FOOTER.data());
     optional<string> name;
-    double value;
+    string input_value;
     auto* para_set = para->add_subcommand("set", "set the parameter");
     para_set->add_option("name", name, "Parameter name")->required();
-    para_set->add_option("value", value, "Parameter value")->required();
+    para_set->add_option("value", input_value, "Parameter value")->required();
     auto* para_value = para->add_subcommand("value", "set the multiple parameter value");
-    array<optional<double>, 7> paras = addParaOptions(para_value);
+    array<optional<string>, 7> input_paras = addParaOptions(para_value);
     auto* para_delete = para->add_subcommand("delete", "Delete the parameter");
     para_delete->add_option("name", name, "Parameter name")->required();
     auto* para_show = para->add_subcommand("show", "Show the parameter list");
     para_show->add_option("name", name, "Parameter name");
 
     auto* run = app.add_subcommand("run", "Start the calculator.");
-    run->add_option("--step", value, "Parameter step");
+    run->add_option("--step", input_value, "Parameter step");
 
     CLI11_PARSE(app, argc, argv);
 
@@ -89,24 +90,36 @@ int command(const int argc, char* argv[])
         if (*para_set)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the set command");
-            auto unmatched_old_value = data_file.setParameter(matched_name, value);
+            auto value = matchValue(input_value);
+            if (!value.has_value())
+            {
+                logger.error(value.error().getMessage() + input_value);
+                return shutdown(std::move(project));
+            }
+            auto unmatched_old_value = data_file.setParameter(matched_name, value.value());
             string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
-            logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + to_string(value));
+            logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + to_string(value.value()));
             data_file.save();
             logger.debug("[arg/Cmd.cpp:command] Data file was saved");
         } else if (*para_value)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the value command");
+            auto paras = matchValues(input_paras);
+            if (!paras.has_value())
+            {
+                logger.error(paras.error().getMessage() + input_value);
+                return shutdown(std::move(project));
+            }
             for (size_t i = 0; i < 7; i++)
-                if (paras[i].has_value())
-                    data_file.setParameter(i, paras[i].value());
+                if (paras.value()[i].has_value())
+                    data_file.setParameter(i, paras.value()[i].value());
             data_file.save();
         }
         else if (*para_delete)
         {
             logger.debug("[arg/Cmd.cpp:command] Input the delete command");
             data_file.deleteParameter(matched_name);
-            logger.info("[arg/Cmd.cpp:command] Delete parameter" + to_string(value));
+            logger.info("[arg/Cmd.cpp:command] Delete parameter " + name.value());
             data_file.save();
             logger.debug("[arg/Cmd.cpp:command] Data file was saved");
         } else if (*para_show)
@@ -117,12 +130,18 @@ int command(const int argc, char* argv[])
         }
     } else if (*run)
     {
+        auto value = matchValue(input_value);
+        if (!value.has_value())
+        {
+            logger.error(value.error().getMessage() + input_value);
+            return shutdown(std::move(project));
+        }
         logger.debug("[arg/Cmd.cpp:command] Input the run command");
         Calculator calculator(project.getDataFile().getParameterList());
         logger.debug("[arg/Cmd.cpp:command] The calculator entry was created");
         optional<AntennaEntryError> error;
-        logger.debug(format("[arg/Cmd.cpp:command] Input step {}", value));
-        error = calculator.step(value);
+        logger.debug(format("[arg/Cmd.cpp:command] Input step {}", value.value()));
+        error = calculator.step(value.value());
         if (error.has_value())
         {
             logger.error(format("[arg/Cmd.cpp:command] Calculate error message: {}", error.value().getMessage()));
@@ -144,9 +163,9 @@ int shutdown(Project project, const int code)
     return code;
 }
 
-array<optional<double>, 7> addParaOptions(CLI::App* app)
+array<optional<string>, 7> addParaOptions(CLI::App* app)
 {
-    array<optional<double>, 7> para;
+    array<optional<string>, 7> para;
     for (size_t i = 0; i < 7; i++)
     {
         string crossbar = "--";
@@ -166,4 +185,48 @@ expected<size_t, CmdError> matchName(const string& name)
         auto index = distance(PARAMETER_MAP.begin(), parameter);
         return index;
     }
+}
+
+expected<double, CmdError> matchValue(const string& value)
+{
+    double number;
+    logger.debug(format("[arg/Cmd.cpp:matchValue] To match the value {}", value));
+    string_view value_number = value;
+    int count = 0;
+    if (isalpha(static_cast<unsigned char>(value.back())))
+    {
+        logger.debug(format("[arg/Cmd.cpp:matchValue] Back is alpha {}", value.back()));
+        const auto unmatch_count = dePrefixFormat(value.back());
+        if (!unmatch_count.has_value()) return unexpected(CmdError(CmdErrorEnum::InvalidArgument, value));
+        logger.debug(format("[arg/Cmd.cpp:matchValue] Matched the prefix, count {}", unmatch_count.value()));
+        count = unmatch_count.value();
+        value_number.remove_suffix(1);
+    }
+    try
+    {
+        number = stod(value_number.data());
+    } catch (const invalid_argument&)
+    {
+        return unexpected(CmdError(CmdErrorEnum::InvalidArgument, value));
+    } catch (const out_of_range&)
+    {
+        return unexpected(CmdError(CmdErrorEnum::OutOfRange, value));
+    }
+    if (count > 0) for (size_t i = 0; i < count; i++) number *= 1e3;
+    else if (count < 0) for (size_t i = 0; i < -count; i++) number /= 1e3;
+    return number;
+}
+
+expected<array<optional<double>, 7>, CmdError> matchValues(const array<optional<string>, 7>& values)
+{
+    array<optional<double>, 7> number_list{};
+    for (size_t i = 0; i < 7; i++)
+    {
+        if (!values[i].has_value()) continue;
+        auto number = matchValue(values[i].value());
+        if (!number.has_value())
+            return unexpected(number.error());
+        number_list[i] = number.value();
+    }
+    return number_list;
 }

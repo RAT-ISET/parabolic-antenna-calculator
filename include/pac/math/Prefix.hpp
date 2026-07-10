@@ -9,6 +9,7 @@
 #pragma once
 #include <string>
 #include <format>
+#include <optional>
 
 using namespace std;
 
@@ -37,4 +38,13 @@ constexpr string prefixFormat(double number)
         return format("{:.4g} {}", number, MIN_UNIT[count]);
     }
     return format("{:.4g} ", number);
+}
+
+constexpr optional<int> dePrefixFormat(const char& c)
+{
+    size_t pos = MIN_UNIT.find(c);
+    if (pos != string::npos) return -(pos + 1);
+    pos = MAX_UNIT.find(c);
+    if (pos != string::npos) return (pos + 1);
+    return nullopt;
 }
