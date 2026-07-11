@@ -9,17 +9,25 @@
 #include <pac/math/Calculate.hpp>
 #include <pac/math/Function.hpp>
 
+void Calculator::filledParameters(const size_t parameter_index)
+{
+    for (size_t parameter_linker_index = PARAMETER_INDEX.offset_[parameter_index]; parameter_linker_index < PARAMETER_INDEX.offset_[parameter_index + 1]; parameter_linker_index++)
+    {
+        functions_[PARAMETER_INDEX.linker_[parameter_linker_index]] -= 1;
+        logger.debug(format("[math/Calculate.cpp:reduceFunctions] Function {} == {}", PARAMETER_INDEX.linker_[parameter_linker_index], functions_[PARAMETER_INDEX.linker_[parameter_linker_index]]));
+    }
+    empty_parameter_count_ -= 1;
+}
+
 Calculator::Calculator(ParameterList& list) : list_(list)
 {
     logger.debug("[math/Calculate.cpp:Calculator] Calculator entry was created");
-    for (size_t i = 0; i < list_.size(); i++)
+    for (size_t parameter_index = 0; parameter_index < list_.size(); parameter_index++)
     {
-        if (list_[i].has_value())
+        if (list_[parameter_index].has_value())
         {
-            logger.debug(format("[math/Calculate.cpp:Calculator] Find value at location {}", i));
-            for (size_t j = PARAMETER_LIST[i]; j < PARAMETER_LIST[i + 1]; j++)
-                functions_[FUNCTION_LINKER[j]] -= 1;
-            empty_parameter_count_ -= 1;
+            logger.debug(format("[math/Calculate.cpp:Calculator] Find value at parameter {}", PARAMETER_MAP[parameter_index]));
+            filledParameters(parameter_index);
         }
     }
 }
@@ -27,41 +35,39 @@ Calculator::Calculator(ParameterList& list) : list_(list)
 optional<AntennaEntryError> Calculator::step()
 {
     logger.debug("[math/Calculate.cpp:step] Calculator entry step");
-    for (size_t i = 0; i < functions_.size(); i++)
+    for (size_t function_index = 0; function_index < functions_.size(); function_index++)
     {
-        if (functions_[i] == 1)
+        if (functions_[function_index] == 1)
         {
-            logger.debug(format("[math/Calculate.cpp:step] Find value can be calculated at function {}", i));
-            for (size_t j = FUNCTION_LIST[i]; j < FUNCTION_LIST[i + 1]; j++)
+            logger.debug(format("[math/Calculate.cpp:step] Find value can be calculated at function {}", function_index));
+            for (size_t function_linker_index = FUNCTION_INDEX.offset_[function_index]; function_linker_index < FUNCTION_INDEX.offset_[function_index + 1]; function_linker_index++)
             {
-                if (size_t linked_j = PARAMETER_LINKER[j]; !list_[linked_j].has_value())
+                if (const size_t parameter_index = FUNCTION_INDEX.linker_[function_linker_index]; !list_[parameter_index].has_value())
                 {
-                    logger.debug(format("[math/Calculate.cpp:step] Find value can be calculated at location {}", linked_j));
+                    logger.debug(format("[math/Calculate.cpp:step] Find value can be calculated at parameter {}", PARAMETER_MAP[parameter_index]));
                     expected<double, AntennaEntryError> result;
-                    switch (i)
+                    switch (function_index)
                     {
                     case 0:
-                        result = Functions::CalculateDiameter(linked_j, list_);
+                        result = Functions::CalculateDiameter(parameter_index, list_);
                         break;
                     case 1:
-                        result = Functions::CalculateWavelength(linked_j, list_);
+                        result = Functions::CalculateWavelength(parameter_index, list_);
                         break;
                     case 2:
-                        result = Functions::CalculateHeight(linked_j, list_);
+                        result = Functions::CalculateHeight(parameter_index, list_);
                         break;
                     case 3:
-                        result = Functions::CalculateIncrease(linked_j, list_);
+                        result = Functions::CalculateIncrease(parameter_index, list_);
                         break;
                     default:
                         result = unexpected(AntennaEntryError
                             (AntennaEntryErrorEnum::UnknownError, LogEntry()));
                     }
                     if (!result.has_value()) return result.error();
-                    logger.debug(format("[math/Calculate.cpp:step] Calculate the value {:.3f} at location {}", result.value(), linked_j));
-                    list_[linked_j] = result.value();
-                    for (size_t k = PARAMETER_LIST[j]; k < PARAMETER_LIST[j + 1]; k++)
-                        functions_[FUNCTION_LINKER[k]] -= 1;
-                    empty_parameter_count_ -= 1;
+                    logger.debug(format("[math/Calculate.cpp:step] Calculate the value {:.3f} at parameter {}", result.value(), PARAMETER_MAP[parameter_index]));
+                    list_[parameter_index] = result.value();
+                    filledParameters(parameter_index);
                     return nullopt;
                 }
             }
