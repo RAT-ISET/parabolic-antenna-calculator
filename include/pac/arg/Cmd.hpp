@@ -24,4 +24,5 @@ array<optional<string>, 7> addParaOptions(CLI::App* app);
 
 expected<size_t, CmdError> matchName(const string& name);
 expected<double, CmdError> matchValue(const string& value);
+optional<CmdError> checkValue(double value, size_t index);
 expected<array<optional<double>, 7>, CmdError> matchValues(const array<optional<string>, 7>& values);

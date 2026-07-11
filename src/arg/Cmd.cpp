@@ -97,6 +97,11 @@ int command(const int argc, char* argv[])
                 logger.error(value.error().getMessage() + input_value);
                 return shutdown(std::move(project));
             }
+            if (auto error = checkValue(value.value(), matched_name); error.has_value())
+            {
+                logger.error(error.value().getMessage() + input_value);
+                return shutdown(std::move(project));
+            }
             auto unmatched_old_value = data_file.setParameter(matched_name, value.value());
             string old_value = unmatched_old_value.has_value() ? format(" from {:.3f}", unmatched_old_value.value()) : "";
             logger.info("[arg/Cmd.cpp:command] Set parameter " + name.value() + old_value + " to " + to_string(value.value()));
@@ -214,6 +219,13 @@ expected<double, CmdError> matchValue(const string& value)
     return number;
 }
 
+optional<CmdError> checkValue(const double value, const size_t index)
+{
+    if (index == 4) return nullopt;
+    if (value < 0) return CmdError(CmdErrorEnum::InvalidArgument, to_string(value));
+    return nullopt;
+}
+
 expected<array<optional<double>, 7>, CmdError> matchValues(const array<optional<string>, 7>& values)
 {
     array<optional<double>, 7> number_list{};
@@ -223,6 +235,8 @@ expected<array<optional<double>, 7>, CmdError> matchValues(const array<optional<
         auto number = matchValue(values[i].value());
         if (!number.has_value())
             return unexpected(number.error());
+        if (auto error = checkValue(number.value(), i); error.has_value())
+            return unexpected(error.value());
         number_list[i] = number.value();
     }
     return number_list;
