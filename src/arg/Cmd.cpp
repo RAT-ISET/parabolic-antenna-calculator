@@ -50,8 +50,9 @@ int command(const int argc, char* argv[])
     auto* para_show = para->add_subcommand("show", "Show the parameter list");
     para_show->add_option("name", name, "Parameter name");
 
+    optional<size_t> step;
     auto* run = app.add_subcommand("run", "Start the calculator.");
-    run->add_option("--step", input_value, "Parameter step");
+    run->add_option("--step", step, "Parameter step");
 
     CLI11_PARSE(app, argc, argv);
 
@@ -130,23 +131,19 @@ int command(const int argc, char* argv[])
         }
     } else if (*run)
     {
-        auto value = matchValue(input_value);
-        if (!value.has_value())
-        {
-            logger.error(value.error().getMessage() + input_value);
-            return shutdown(std::move(project));
-        }
         logger.debug("[arg/Cmd.cpp:command] Input the run command");
         Calculator calculator(project.getDataFile().getParameterList());
         logger.debug("[arg/Cmd.cpp:command] The calculator entry was created");
         optional<AntennaEntryError> error;
-        logger.debug(format("[arg/Cmd.cpp:command] Input step {}", value.value()));
-        error = calculator.step(value.value());
+        if (step.has_value())
+            logger.debug(format("[arg/Cmd.cpp:command] Input step {}", step.value()));
+        error = step.has_value() ? calculator.step(step.value()) : calculator.run();
+        project.getDataFile().save();
         if (error.has_value())
         {
             logger.error(format("[arg/Cmd.cpp:command] Calculate error message: {}", error.value().getMessage()));
-            shutdown(std::move(project), -1);
-        } else project.getDataFile().save();
+            return shutdown(std::move(project), -1);
+        }
     } else logger.debug("[arg/Cmd.cpp:command] The subcommand wasn't matched");
     return shutdown(std::move(project));
 }

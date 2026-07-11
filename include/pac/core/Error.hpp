@@ -27,6 +27,7 @@ enum class AntennaEntryErrorEnum
 constexpr array<string_view, 7> ANTENNA_ENTRY_ERROR_MESSAGES = {
     "MissingParameter",
     "InvalidParameter",
+    "ConflictParameter",
     "MathematicalError",
     "ErrorInputParameter",
     "UnknownParameter",

@@ -92,5 +92,7 @@ optional<AntennaEntryError> Calculator::step(size_t count)
 
 optional<AntennaEntryError> Calculator::run()
 {
-    return step(8);
+    auto result = step(8);
+    if (empty_parameter_count_ == 0) return nullopt;
+    return result;
 }
