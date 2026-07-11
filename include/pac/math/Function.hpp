@@ -13,10 +13,10 @@
 #include <pac/core/Error.hpp>
 #include <pac/math/Constants.hpp>
 
-constexpr optional<AntennaEntryErrorEnum> CheckInputParameterItem(const optional<double> parameter)
+constexpr optional<AntennaEntryErrorEnum> CheckInputParameterItem(const optional<double> parameter, const size_t index)
 {
     if (!parameter.has_value()) return AntennaEntryErrorEnum::MissingParameter;
-    if (parameter < 0) return AntennaEntryErrorEnum::InvalidParameter;
+    if (parameter < 0 && index != 4) return AntennaEntryErrorEnum::InvalidParameter;
     return nullopt;
 }
 
@@ -27,7 +27,7 @@ constexpr expected<LogEntry, AntennaEntryError> CheckInputParameter(const array<
     log_entry.input_ = vector(unchecked_list.begin(), unchecked_list.end());
     for (const size_t i : unchecked_list)
     {
-        if (optional<AntennaEntryErrorEnum> error_type = CheckInputParameterItem(list[i]); error_type.has_value())
+        if (optional<AntennaEntryErrorEnum> error_type = CheckInputParameterItem(list[i], i); error_type.has_value())
             return unexpected(AntennaEntryError(error_type.value(), log_entry));
     }
     return log_entry;
