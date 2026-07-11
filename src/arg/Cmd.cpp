@@ -94,12 +94,12 @@ int command(const int argc, char* argv[])
             auto value = matchValue(input_value);
             if (!value.has_value())
             {
-                logger.error(value.error().getMessage() + input_value);
+                logger.error(value.error().getMessage());
                 return shutdown(std::move(project));
             }
             if (auto error = checkValue(value.value(), matched_name); error.has_value())
             {
-                logger.error(error.value().getMessage() + input_value);
+                logger.error(error.value().getMessage());
                 return shutdown(std::move(project));
             }
             auto unmatched_old_value = data_file.setParameter(matched_name, value.value());
@@ -113,7 +113,7 @@ int command(const int argc, char* argv[])
             auto paras = matchValues(input_paras);
             if (!paras.has_value())
             {
-                logger.error(paras.error().getMessage() + input_value);
+                logger.error(paras.error().getMessage());
                 return shutdown(std::move(project));
             }
             for (size_t i = 0; i < 7; i++)
