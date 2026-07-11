@@ -22,7 +22,7 @@ constexpr string prefixFormat(double number)
     size_t count = 0;
     if (number >= 1000)
     {
-        while (number >= 1000)
+        while (number >= 1000 && count < 10)
         {
             number /= 1000;
             count++;
@@ -31,7 +31,7 @@ constexpr string prefixFormat(double number)
     }
     if (number <= 0.001)
     {
-        while (number <= 0.001)
+        while (number <= 0.001 && count < 10)
         {
             number *= 1000;
             count++;
