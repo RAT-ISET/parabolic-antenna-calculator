@@ -18,6 +18,7 @@ constexpr string_view MAX_UNIT = " kMGTPEZYRQ";
 
 constexpr string prefixFormat(double number)
 {
+    if (number < 0) return format("{:.4g}", number);
     size_t count = 0;
     if (number >= 1000)
     {
