@@ -35,7 +35,7 @@ constexpr array PARAMETER_MAP{
 constexpr array PARAMETER_UNIT{
     "Hz",
     "m",
-    "dB",
+    "dBi",
     "m",
     "",
     "m",
