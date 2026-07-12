@@ -9,9 +9,24 @@
    - Environmental Requirements
    - Download and Installation
 5. Instructions for Use
-6. Project Structure
-7. License
-8. Contact Information
+   - Usage
+      - Basic Command Structure
+      - Global Options
+      - Subcommands
+      - Parameter Management (para)
+      - Run Calculation (run)
+      - Complete Example
+   - Report
+      - Required Information
+      - How to Collect Debug Log
+      - What to Include in Your Report
+      - Example Bug Report Template
+              - Description
+              - Log
+              - Environment
+7. Project Structure
+8. License
+9. Contact Information
  
 ##  Project Introduction
 Parabolic-Antenna-Calculators is a professional auxiliary tool aimed at antenna designers, used for rapidly calculating the core performance parameters of parabolic reflector antennas. 
@@ -69,8 +84,10 @@ ParabolicAntennaCalculator [OPTIONS] <project_path> [SUBCOMMANDS]
 | `set`      | Set a parameter     |
 | `delete`   | Delete a parameter  |
 | `show`     | Show parameter list |
+| `value`    | Set parameters using --<parameter_name> <parameter_value> format |
 
-**Available parameters:** `frequency` / `wavelength` / `efficiency` / `diameter` / `increase` / `focalLength` / `height` / `f/D`
+- *Available parameters:* `frequency` / `wavelength` / `efficiency` / `diameter` / `increase` / `focalLength` / `height` / `f/D`
+
 
 ```bash
 # Show all parameters
@@ -84,6 +101,9 @@ ParabolicAntennaCalculator <project_path> para set <parameter_name> <value>
 
 # Delete a parameter
 ParabolicAntennaCalculator <project_path> para delete <parameter_name>
+
+# Set one or more parameters using --<parameter_name> <parameter_value> format
+ParabolicAntennaCalculator <project_path> para value --frequency 1.0 --diameter 2.4
 ```
 
 #### Run Calculation (run)
@@ -120,7 +140,69 @@ ParabolicAntennaCalculator myproject run
 ParabolicAntennaCalculator myproject para show
 ```
 
+### Report
+
+> ***Bug Reporting Guidelines***
+ When submitting a bug report, please include the following information to help us diagnose and resolve the issue efficiently:
+
+#### Required Information
+
+- Item Description
+- Program Version Run ParabolicAntennaCalculator --version and include the output
+- Operating System Include OS name, version, and architecture (e.g., Ubuntu 22.04 LTS x86_64)
+- Debug Log Run the program with --debug flag and capture the full output
+
+> **Debug log path:** `<project_path>/log.txt`
+
+#### What to Include in Your Report
+
+1. Version Information
+   ```bash
+   ParabolicAntennaCalculator --version
+   ```
+2. System Information
+- OS: uname -a (Linux/macOS) or systeminfo (Windows)
+- Architecture: x64 / ARM / others
+3. Debug Log
+- Attach the complete debug log file generated with --debug flag
+- This includes detailed execution traces, parameter states, and calculation steps
+4. Steps to Reproduce
+- Provide the exact commands that led to the issue
+- Include your project parameters if applicable
+5. Expected vs Actual Behavior
+- Describe what you expected to happen
+- Describe what actually happened
+
+#### Example Bug Report Template
+##### Description
+When the program throws an error, the Input will be duplicate printed.
+
+##### Log
+
+```text
+.\ParabolicAntennaCalculator.exe test --debug para set increase -1.0 
+[DEBUG][arg/Cmd.cpp:command] The command handler was parsed
+
+......
+
+[DEBUG][arg/Cmd.cpp:matchValue] To match the value -1.0
+[ERROR]The input argument was invalid
+Input: -1.000000-1.0
+[INFO][arg/Cmd.cpp:shutdown] Close the project
+[DEBUG][io/Project.cpp:close] Close the data file
+[DEBUG][io/Project.cpp:close] Close the log file
+```
+
+##### Environment
+
+> *Version: Commit 57e35a9b2ca80f6eb35abd8e830034602d42ff42*
+> *System: Windows 11*
+> *Affected System: All*
+
+> **Note:** Debug logs contain detailed internal information. Please review them before sharing publicly and remove any sensitive data if necessary.
+
 ## Project Structure
+
 ```text
 .
 │  LICENSE
@@ -163,12 +245,12 @@ ParabolicAntennaCalculator myproject para show
 
 ## Contact Information
 - Author: **Team ISET**
-- Email: [ratiset@outlook.com](mailto:ratiset@outlook.com)
-- Website: [ISET](https://www.ratiset.org)
+- Email: ratiset@outlook.com
+- Website: [ISET](https://www.ratiset.org/)
 - Repository: [Parabolic Antenna Calculator](https://github.com/RAT-ISET/parabolic-antenna-calculator)
 - Issues: [Parabolic Antenna Calculator Issues](https://github.com/RAT-ISET/parabolic-antenna-calculator/issues)
 
 ---
 
-> **Copyright (c) 2026 Team ISET**  
-> **This project is licensed under [MIT](/LICENSE).**
+>**Copyright (c) 2026 Team ISET**
+>**This project is licensed under [MIT](https://github.com/RAT-ISET/parabolic-antenna-calculator/blob/main/LICENSE).**
