@@ -21,9 +21,9 @@
       - How to Collect Debug Log
       - What to Include in Your Report
       - Example Bug Report Template
-              - Description
-              - Log
-              - Environment
+         - Description
+         - Log
+         - Environment
 7. Project Structure
 8. License
 9. Contact Information
