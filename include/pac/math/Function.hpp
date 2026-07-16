@@ -131,28 +131,28 @@ namespace Functions
             auto out = CheckInputParameter(unchecked_list, list);
             if (!out.has_value()) return unexpected(out.error());
             logger.addEntry(out.value());
-            return pow(10, list[3].value()) * numbers::pi * sqrt(list[2].value() / list[4].value());
+            return list[3].value() * numbers::pi * sqrt(list[2].value() / pow(10, list[4].value()));
         }
         if (want == 2) {
             constexpr array<size_t, 3> unchecked_list = {1, 3, 4};
             auto out = CheckInputParameter(unchecked_list, list);
             if (!out.has_value()) return unexpected(out.error());
             logger.addEntry(out.value());
-            return list[4].value() * sq(list[1].value() / (numbers::pi * pow(10, list[3].value())));
+            return pow(10, list[4].value()) * sq(list[1].value() / (numbers::pi * list[3].value()));
         }
         if (want == 3) {
             constexpr array<size_t, 3> unchecked_list = {1, 2, 4};
             auto out = CheckInputParameter(unchecked_list, list);
             if (!out.has_value()) return unexpected(out.error());
             logger.addEntry(out.value());
-            return log10(list[1].value() * Constants::BACK_PI * sqrt(list[4].value() / list[2].value()));
+            return list[1].value() * Constants::BACK_PI * sqrt(pow(10, list[4].value()) / list[2].value());
         }
         if (want == 4) {
             constexpr array<size_t, 3> unchecked_list = {1, 2, 3};
             auto out = CheckInputParameter(unchecked_list, list);
             if (!out.has_value()) return unexpected(out.error());
             logger.addEntry(out.value());
-            return list[2].value() * sq(numbers::pi * pow(10, list[3].value()) / list[1].value());
+            return log10(list[2].value() * sq(numbers::pi * list[3].value() / list[1].value()));
         }
         return unexpected(UNMATCHED_INPUT_PARAMETER);
     }
