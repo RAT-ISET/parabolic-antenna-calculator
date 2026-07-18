@@ -117,7 +117,7 @@ namespace Functions
             auto out = CheckInputParameter(unchecked_list, list);
             if (!out.has_value()) return unexpected(out.error());
             logger.addEntry(out.value());
-            return sq(list[3].value()) / (16 * list[3].value());
+            return sq(list[3].value()) / (16 * list[5].value());
         }
         return unexpected(UNMATCHED_INPUT_PARAMETER);
     }

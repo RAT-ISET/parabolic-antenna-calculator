@@ -40,5 +40,5 @@ constexpr array PARAMETER_UNIT{
     "dBi",
     "m",
     "m",
-    "Hz/m",
+    "",
 };
