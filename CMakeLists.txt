@@ -25,3 +25,4 @@ include(cmake/Release.cmake)
 include(cmake/ArchPkg.cmake)
 
 add_subdirectory(src)
+add_subdirectory(test)

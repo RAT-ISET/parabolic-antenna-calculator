@@ -1,0 +1,6 @@
+include(CTest)
+add_executable(TestCalculator CalculatorTest.cpp)
+target_link_libraries(TestCalculator PRIVATE ParabolicAntennaCalculatorMath ParabolicAntennaCalculatorCore)
+target_include_directories(TestCalculator PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+add_test(Calculator CalculatorTest COMMAND CalculatorTest)
