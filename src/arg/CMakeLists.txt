@@ -1,3 +1,3 @@
 add_library(ParabolicAntennaCalculatorArg Cmd.cpp CmdError.cpp)
-target_include_directories(ParabolicAntennaCalculatorArg PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(ParabolicAntennaCalculatorArg PRIVATE ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/generated)
 target_link_libraries(ParabolicAntennaCalculatorArg PRIVATE ParabolicAntennaCalculatorDeps ParabolicAntennaCalculatorIo ParabolicAntennaCalculatorMath)

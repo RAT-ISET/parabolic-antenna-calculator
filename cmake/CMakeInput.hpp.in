@@ -1,0 +1,12 @@
+// ==============================================================
+// Copyright (c) 2026 Team ISET
+// Licensed under the MIT.
+// https://github.com/RAT-ISET/parabolic-antenna-calculator
+// ==============================================================
+// Path /include/pac/math/Function.hpp.in
+// Function definition for calculator.
+
+#pragma once
+#include <string_view>
+
+constexpr std::string_view SOFTWARE_VERSION = "Parabolic Antenna Calculator Version @PROJECT_FULL_VERSION@";

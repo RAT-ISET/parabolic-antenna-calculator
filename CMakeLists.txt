@@ -14,6 +14,8 @@ else ()
     set(PROJECT_FULL_VERSION ${PROJECT_VERSION})
 endif ()
 
+configure_file(${CMAKE_SOURCE_DIR}/cmake/CMakeInput.hpp.in ${CMAKE_BINARY_DIR}/generated/CMakeInput.hpp)
+
 set(PROJECT_RELEASE 1)
 set(PROJECT_DESCRIPTION "A parabolic antenna calculator")
 

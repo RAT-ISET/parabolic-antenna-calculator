@@ -7,7 +7,6 @@
 // Command line handler.
 
 #include <iostream>
-
 #include <pac/arg/Cmd.hpp>
 #include <pac/io/PacProject.hpp>
 #include <pac/arg/CmdError.hpp>
@@ -15,6 +14,7 @@
 #include <pac/core/Message.hpp>
 #include <pac/math/Calculate.hpp>
 #include <pac/math/Prefix.hpp>
+#include <CMakeInput.hpp>
 
 using namespace std;
 
@@ -24,7 +24,7 @@ int command(const int argc, char* argv[])
 
     app.set_version_flag(
         "-v,--version",
-        "Parabolic Antenna Calculator Version 0.1.0"
+        SOFTWARE_VERSION.data()
     );
 
     app.footer(HELP_FOOTER.data());
